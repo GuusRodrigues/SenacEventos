@@ -2,9 +2,9 @@ import React from "react";
 import { useRouter } from "next/router";
 import { FaHome, FaBookmark, FaNetworkWired, FaInfoCircle } from "react-icons/fa";
 import HomeScreen from "@/pages/home";
-import PostCard from "@/pages/PostScreen";
-import InfoScreen from "@/pages/InfoScreen";
-import FavoriteEventsScreen from "@/pages/FavoritesEventsScreen";
+//import PostCard from "@/pages/PostScreen";
+//import InfoScreen from "@/pages/InfoScreen";
+//import FavoriteEventsScreen from "@/pages/FavoritesEventsScreen";
 
 const TabNavigator = () => {
   const router = useRouter();

@@ -4,7 +4,7 @@ import React from "react";
 import { usePathname, useRouter } from "next/navigation";
 import LoginScreen from "@/pages/login";
 import TabNavigator from "@/navigators/tabNavgator";
-//import { FavoritesProvider } from "@/context/FavoritesContext";
+import { FavoritesProvider } from "@/context/favoritesContext";
 
 const App = () => {
   const router = useRouter();
@@ -15,12 +15,12 @@ const App = () => {
   }, [router]);
 
   return (
-    //<FavoritesProvider>
+    <FavoritesProvider>
       <div className="min-h-screen">
         {pathname === "/login" && <LoginScreen />}
         {pathname === "/tabNavigator" && <TabNavigator />}
       </div>
-    //</FavoritesProvider>
+    </FavoritesProvider>
   );
 };
 

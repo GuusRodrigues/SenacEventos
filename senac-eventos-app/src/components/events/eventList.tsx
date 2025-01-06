@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { FaFrown } from 'react-icons/fa';
-import { fetchEvents } from '@/services/eventService';
-import { createFavoriteEvent, fetchFavoriteEvents, deleteFavoriteEvent } from '@/services/favoriteService';
-import EventCard from './EventCard';
-import { Event } from '@/interfaces/eventInterface';
-import { SaveActivity } from '@/interfaces/savedEventsInterface';
-import { useFavorites } from '@/context/FavoritesContext';
-import EventSkeleton from './EventSkeleton';
+//import { fetchEvents } from '@/services/eventService';
+//import { createFavoriteEvent, fetchFavoriteEvents, deleteFavoriteEvent } from '@/services/favoriteService';
+//import EventCard from './EventCard';
+//import { Event } from '@/interfaces/eventInterface';
+//import { SaveActivity } from '@/interfaces/savedEventsInterface';
+//import { useFavorites } from '@/context/FavoritesContext';
+//import EventSkeleton from './EventSkeleton';
 
 interface EventListProps {
   selectedDate: string;

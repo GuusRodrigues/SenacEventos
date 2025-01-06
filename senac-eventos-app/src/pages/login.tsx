@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import RegisterParticipantScreen from "@/pages/registerParticipant";
-import { login } from "@/services/authService";
-import { getParticipantByEmail } from "@/services/participantService";
+import "@/styles/styles.css"; // Importe o arquivo CSS
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -54,8 +53,8 @@ const LoginScreen = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-      <div className="mb-10">
+    <div className="container">
+      <div className="logo">
         <Image
           src="/images/Marca NRF 4 1.png"
           alt="Marca"
@@ -64,54 +63,46 @@ const LoginScreen = () => {
           className="object-contain"
         />
       </div>
-      <div className="flex flex-col w-full max-w-md px-4">
-        <div className="mb-6">
-          <label className="block text-sm font-bold text-gray-700 mb-2">E-mail</label>
-          <input
-            type="email"
-            className={`w-full px-3 py-2 border rounded-lg focus:outline-none ${
-              emailError ? "border-red-500" : "border-blue-500"
-            }`}
-            placeholder="Digite seu email"
-            value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (e.target.value.trim()) {
-                setEmailError(false);
-              }
-            }}
-          />
-          {emailError && (
-            <p className="mt-2 text-xs text-red-500">Email é obrigatório.</p>
-          )}
-        </div>
-        <button
-          className={`w-full py-2 text-white bg-blue-700 rounded-lg ${
-            loading ? "opacity-60" : ""
-          }`}
-          onClick={() => handleLogin()}
-          disabled={loading}
-        >
-          {loading ? (
-            <div className="flex items-center justify-center">
-              <div className="w-5 h-5 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
-            </div>
-          ) : (
-            "Entrar"
-          )}
-        </button>
-        {loginError && (
-          <p className="mt-4 text-center text-red-500">
-            Falha no login ou na busca de informações do participante.
-          </p>
+      <div className="form-group">
+        <label className="label">E-mail</label>
+        <input
+          type="email"
+          className={`input ${emailError ? "input-error" : ""}`}
+          placeholder="Digite seu email"
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (e.target.value.trim()) {
+              setEmailError(false);
+            }
+          }}
+        />
+        {emailError && (
+          <p className="error-message">Email é obrigatório.</p>
         )}
-        <button className="mt-4 text-blue-700" onClick={openRegisterModal}>
-          Não possui uma conta? <span className="font-bold">Cadastre-se</span>
-        </button>
       </div>
+      <button
+        className="button"
+        onClick={() => handleLogin()}
+        disabled={loading}
+      >
+        {loading ? (
+          <div className="spinner"></div>
+        ) : (
+          "Entrar"
+        )}
+      </button>
+      {loginError && (
+        <p className="error-message">
+          Falha no login ou na busca de informações do participante.
+        </p>
+      )}
+      <button className="link" onClick={openRegisterModal}>
+        Não possui uma conta? <span className="font-bold">Cadastre-se</span>
+      </button>
       {isModalVisible && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-4 rounded-lg">
+        <div className="modal">
+          <div className="modal-content">
             <RegisterParticipantScreen
               onClose={closeRegisterModal}
               onRegisterSuccess={handleRegisterSuccess}
