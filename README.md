@@ -1,2 +1,0 @@
-# SenacEventos
-web app
