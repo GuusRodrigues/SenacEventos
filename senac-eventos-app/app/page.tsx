@@ -1,27 +1,15 @@
 "use client";
 
-import React from "react";
-import { usePathname, useRouter } from "next/navigation";
-import LoginScreen from "@/pages/login";
-import TabNavigator from "@/navigators/tabNavgator";
-import { FavoritesProvider } from "@/context/favoritesContext";
+import { useAuth } from "@/app/context/authContext";
 
-const App = () => {
-  const router = useRouter();
-  const pathname = usePathname();
+export default function Home() {
+  const { isAuthenticated } = useAuth();
 
-  React.useEffect(() => {
-    router.push("/login");
-  }, [router]);
+  if (!isAuthenticated) return null;
 
   return (
-    <FavoritesProvider>
-      <div className="min-h-screen">
-        {pathname === "/login" && <LoginScreen />}
-        {pathname === "/tabNavigator" && <TabNavigator />}
-      </div>
-    </FavoritesProvider>
+    <div>
+      <h1>Bem-vindo ao Senac Eventos!</h1>
+    </div>
   );
-};
-
-export default App;
+}
