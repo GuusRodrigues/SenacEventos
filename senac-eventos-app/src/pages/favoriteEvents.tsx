@@ -1,6 +1,6 @@
-/*import React, { useEffect, useState } from "react";
-//import { fetchFavoriteEvents, deleteFavoriteEvent } from "@/services/favoriteService";
-import { useFavorites } from "@/context/FavoritesContext";
+import React, { useEffect, useState } from "react";
+import { fetchFavoriteEvents, deleteFavoriteEvent } from "@/services/favoriteService";
+import { useFavorites } from "@/context/favoritesContext";
 
 const FavoriteEventsPage = () => {
   const [favorites, setFavorites] = useState<any[]>([]);
@@ -108,4 +108,4 @@ const FavoriteEventsPage = () => {
   );
 };
 
-export default FavoriteEventsPage;*/
+export default FavoriteEventsPage;
