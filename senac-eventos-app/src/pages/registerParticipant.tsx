@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useRouter } from "next/router";
 import { MultiSelect } from "react-multi-select-component";
-import { AreaOfExpertiseDTO } from "../interfaces/areaOfExpertiseInterface";
-//import { CreateParticipant } from "../interfaces/participantInterface";
+import { AreaOfExpertiseDTO } from "../interfaces/areaOfExpertise";
+import { CreateParticipant } from "../interfaces/participant";
 //import { createParticipant } from "../services/participantService";
 //import { getAllAreas } from "@/services/areaService";
 
