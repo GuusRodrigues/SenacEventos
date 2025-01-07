@@ -1,8 +1,10 @@
+"use client";
+
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
-import RegisterParticipantScreen from "@/pages/registerParticipant";
-import { login } from "@/services/authService";
+import { login } from "../services/authService";
+import RegisterParticipantScreen from "../components/registerParticipant";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -18,36 +20,23 @@ const LoginScreen = () => {
       setEmailError(true);
       return;
     }
-
     setLoading(true);
     setEmailError(false);
     setLoginError(false);
-
     try {
-      if (emailToUse === "admin2024") {
-        router.push("/tabNavigator");
-        return;
-      }
-
-      // Certifique-se de que as funções `login` e `getParticipantByEmail` estão definidas/importadas corretamente
-      await login(emailToUse);
-      //const participant = await getParticipantByEmail(emailToUse);
-      router.push("/tabNavigator");
-    } catch (error) {
+      const response = await login(emailToUse);
+      localStorage.setItem("token", response.token);
+      localStorage.setItem("email", response.email);
+      router.push("/home");
+    } catch {
       setLoginError(true);
     } finally {
       setLoading(false);
     }
   };
 
-  const openRegisterModal = () => {
-    setIsModalVisible(true);
-  };
-
-  const closeRegisterModal = () => {
-    setIsModalVisible(false);
-  };
-
+  const openRegisterModal = () => setIsModalVisible(true);
+  const closeRegisterModal = () => setIsModalVisible(false);
   const handleRegisterSuccess = (registeredEmail: string) => {
     setIsModalVisible(false);
     handleLogin(registeredEmail);
@@ -56,7 +45,6 @@ const LoginScreen = () => {
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="flex flex-col items-center w-full max-w-md p-4">
-        {/* Logo */}
         <div className="mb-10">
           <Image
             src="/images/Marca NRF 4 1.png"
@@ -66,8 +54,6 @@ const LoginScreen = () => {
             className="object-contain"
           />
         </div>
-
-        {/* Formulário de Login */}
         <div className="w-full mb-6">
           <label className="block mb-2 text-gray-700 font-bold">E-mail</label>
           <input
@@ -79,19 +65,12 @@ const LoginScreen = () => {
             }`}
             placeholder="Digite seu email"
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              if (e.target.value.trim()) {
-                setEmailError(false);
-              }
-            }}
+            onChange={(e) => setEmail(e.target.value)}
           />
           {emailError && (
             <p className="mt-1 text-sm text-red-500">Email é obrigatório.</p>
           )}
         </div>
-
-        {/* Botão de Login */}
         <button
           className="w-full py-3 mb-4 text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-60 flex items-center justify-center"
           onClick={() => handleLogin()}
@@ -122,15 +101,11 @@ const LoginScreen = () => {
             "Entrar"
           )}
         </button>
-
-        {/* Mensagem de Erro no Login */}
         {loginError && (
           <p className="mb-4 text-sm text-red-500">
             Falha no login ou na busca de informações do participante.
           </p>
         )}
-
-        {/* Link para Registro */}
         <button
           className="text-blue-600 hover:text-blue-800 font-semibold"
           onClick={openRegisterModal}
@@ -138,12 +113,9 @@ const LoginScreen = () => {
           Não possui uma conta?{" "}
           <span className="font-bold text-blue-700">Cadastre-se</span>
         </button>
-
-        {/* Modal de Registro */}
         {isModalVisible && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
             <div className="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
-              {/* Botão de Fechar Modal */}
               <button
                 className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
                 onClick={closeRegisterModal}
@@ -163,8 +135,6 @@ const LoginScreen = () => {
                   />
                 </svg>
               </button>
-
-              {/* Conteúdo do Modal */}
               <RegisterParticipantScreen
                 onClose={closeRegisterModal}
                 onRegisterSuccess={handleRegisterSuccess}
