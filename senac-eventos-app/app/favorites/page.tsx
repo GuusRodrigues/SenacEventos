@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import TabNavigator from "../components/tabNavgator";
 
 const FavoritesPage = () => {
   return (
@@ -9,6 +10,8 @@ const FavoritesPage = () => {
       <p className="mt-4 text-gray-600">
         Aqui você encontra os eventos que marcou como favoritos.
       </p>
+      <TabNavigator /> 
+
     </div>
   );
 };

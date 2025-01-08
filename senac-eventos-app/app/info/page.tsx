@@ -9,6 +9,7 @@ import TravelGuideModal from "../components/infoScreenModals/TravelGuideModal";
 import TranslatorModal from "../components/infoScreenModals/TranslatorModal";
 import EditProfileModal from "../components/infoScreenModals/EditProfileModal";
 import MyCheckinsModal from "../components/infoScreenModals/MyCheckinsModal";
+import TabNavigator from "../components/tabNavgator";
 
 
 const InfoScreen: React.FC = () => {
@@ -166,7 +167,10 @@ const InfoScreen: React.FC = () => {
       <TravelGuideModal visible={modalTravelGuideVisible} onClose={() => setModalTravelGuideVisible(false)} />
       <EditProfileModal visible={modalVisible} onClose={() => setModalVisible(false)} />
       <MyCheckinsModal visible={modalMyCheckinsVisible} onClose={() => setModalMyCheckinsVisible(false)} />
+      <TabNavigator /> 
+
     </div>
+
   );
 };
 

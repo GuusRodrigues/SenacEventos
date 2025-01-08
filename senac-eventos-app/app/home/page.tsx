@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import DateScroll from '../components/dateScroll/dateScroll';
 import EventList from '../components/events/EventList';
+import TabNavigator from '../components/tabNavgator';
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState('');
@@ -20,6 +21,7 @@ export default function HomeScreen() {
       <DateScroll selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
 
       <EventList selectedDate={selectedDate} />
+      <TabNavigator /> 
     </>
   );
 }

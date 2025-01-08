@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import TabNavigator from "../components/tabNavgator";
 
 const TimelinePage = () => {
   return (
@@ -9,6 +10,8 @@ const TimelinePage = () => {
       <p className="mt-4 text-gray-600">
         Confira as atualizações e os destaques dos eventos mais recentes.
       </p>
+      <TabNavigator /> 
+
     </div>
   );
 };
