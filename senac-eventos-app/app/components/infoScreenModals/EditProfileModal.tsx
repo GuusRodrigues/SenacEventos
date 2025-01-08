@@ -132,7 +132,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">Áreas de Especialização</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">Segmento</label>
               <MultiSelect
                 options={areas.map((area) => ({
                   label: area.name,
