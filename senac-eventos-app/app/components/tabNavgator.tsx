@@ -31,11 +31,11 @@ const TabNavigator = () => {
   ];
 
   return (
-    <div className="flex justify-around bg-white py-4 border-t border-gray-200 fixed bottom-0 left-0 w-full z-50">
+    <div className="flex justify-between items-center bg-white py-4 border-t border-gray-200 fixed bottom-0 left-0 w-full z-50">
       {routes.map(({ label, path }) => (
         <button
           key={label}
-          className="flex flex-col items-center focus:outline-none"
+          className="flex flex-col items-center justify-center flex-1 focus:outline-none"
           onClick={() => router.push(path)}
         >
           {renderIcon(label, pathname === path)}

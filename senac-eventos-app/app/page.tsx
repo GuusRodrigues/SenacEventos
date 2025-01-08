@@ -1,15 +1,18 @@
 "use client";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-import { useAuth } from "@/app/context/authContext";
+export default function Root() {
+  const router = useRouter();
 
-export default function Home() {
-  const { isAuthenticated } = useAuth();
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      router.push("/login");
+    } else {
+      router.push("/home");
+    }
+  }, [router]);
 
-  if (!isAuthenticated) return null;
-
-  return (
-    <div>
-      <h1>Bem-vindo ao Senac Eventos!</h1>
-    </div>
-  );
+  return null; 
 }

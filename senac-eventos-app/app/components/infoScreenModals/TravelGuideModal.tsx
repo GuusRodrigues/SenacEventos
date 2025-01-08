@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState } from "react";
 import { MdFlight, MdHotel, MdDirectionsCar } from "react-icons/md";
 import TourismInfoCard from "./TourismInfoCard";
@@ -28,10 +30,10 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
   if (!visible) return null;
 
   return (
-    <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
       {!currentSubModal && (
-        <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
-          <h2 className="text-2xl font-bold text-center mb-6">
+        <div className="bg-white rounded-lg shadow-lg justify-end p-6 w-full max-w-2xl h-[40vh] flex flex-col overflow-hidden">
+          <h2 className="text-2xl text-gray-800 font-bold text-center mb-6">
             Hospedagem e Transporte
           </h2>
           <div className="flex justify-around">
@@ -40,21 +42,21 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
               onClick={() => openSubModal("flight")}
             >
               <MdFlight className="text-6xl text-gray-800" />
-              <span className="mt-2 text-lg">Voo</span>
+              <span className="mt-2 text-gray-800 text-lg">Voo</span>
             </button>
             <button
               className="flex flex-col items-center"
               onClick={() => openSubModal("hotel")}
             >
               <MdHotel className="text-6xl text-gray-800" />
-              <span className="mt-2 text-lg">Hospedagem</span>
+              <span className="mt-2 text-gray-800 text-lg">Hospedagem</span>
             </button>
             <button
               className="flex flex-col items-center"
               onClick={() => openSubModal("tourism")}
             >
               <MdDirectionsCar className="text-6xl text-gray-800" />
-              <span className="mt-2 text-lg">Turismo</span>
+              <span className="mt-2 text-gray-800 text-lg">Turismo</span>
             </button>
           </div>
           <button
@@ -67,13 +69,13 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
       )}
 
       {currentSubModal && (
-        <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
-          <h2 className="text-2xl font-bold text-center mb-6">
+        <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-2xl h-[90vh] flex flex-col">
+          <h2 className="text-2xl font-bold text-gray-800 text-center mb-6">
             {currentSubModal === "flight" && "Informações sobre Voos"}
             {currentSubModal === "hotel" && "Informações sobre Hospedagem"}
             {currentSubModal === "tourism" && "Informações sobre Turismo"}
           </h2>
-          <div className="overflow-y-auto max-h-96">
+          <div className="overflow-y-auto max-h-[90vh]">
             {currentSubModal === "flight" && <FlightInfoCard />}
             {currentSubModal === "hotel" && <HotelInfoCard />}
             {currentSubModal === "tourism" && <TourismInfoCard />}

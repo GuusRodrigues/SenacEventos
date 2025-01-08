@@ -11,7 +11,6 @@ const TimelinePage = () => {
         Confira as atualizações e os destaques dos eventos mais recentes.
       </p>
       <TabNavigator /> 
-
     </div>
   );
 };

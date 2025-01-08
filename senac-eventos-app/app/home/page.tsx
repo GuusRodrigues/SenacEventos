@@ -1,27 +1,48 @@
 "use client";
-import { useState } from 'react';
-import Image from 'next/image';
-import DateScroll from '../components/dateScroll/dateScroll';
-import EventList from '../components/events/EventList';
-import TabNavigator from '../components/tabNavgator';
+import { useState } from "react";
+import Image from "next/image";
+import DateScroll from "../components/dateScroll/dateScroll";
+import EventList from "../components/events/EventList";
+import TabNavigator from "../components/tabNavgator";
 
 export default function HomeScreen() {
-  const [selectedDate, setSelectedDate] = useState('');
+  const [selectedDate, setSelectedDate] = useState("");
 
   return (
     <>
-      <div className="w-full bg-blue-500 flex items-center justify-center py-20">
-        <Image src="/images/marca.png" alt="Marca" width={200} height={200} />
+      <div className="w-full bg-blue-500 flex items-center justify-center py-10 sm:py-20">
+        <Image
+          src="/images/marca.png"
+          alt="Marca"
+          width={150}
+          height={150}
+          className="sm:w-[200px] sm:h-[200px] object-cover"
+        />
       </div>
 
-      <div className="mx-auto my-4">
-        <Image src="/images/exemploInicio.png" alt="Exemplo Início" width={500} height={300} />
+      <div className="w-full flex justify-center">
+        <div className="w-full h-[200px] sm:h-[300px] relative">
+          <Image
+            src="/images/exemploInicio.png"
+            alt="Exemplo Início"
+            layout="fill"
+            className="object-cover"
+          />
+        </div>
       </div>
 
-      <DateScroll selectedDate={selectedDate} setSelectedDate={setSelectedDate} />
+      <div className="scrollbar-hide">
+        <DateScroll
+          selectedDate={selectedDate}
+          setSelectedDate={setSelectedDate}
+        />
+      </div>
 
-      <EventList selectedDate={selectedDate} />
-      <TabNavigator /> 
+      <div className="px-4 scrollbar-hide">
+        <EventList selectedDate={selectedDate} />
+      </div>
+
+      <TabNavigator />
     </>
   );
 }

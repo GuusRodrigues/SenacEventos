@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { FaFrown } from "react-icons/fa";
 import { fetchEvents } from "@/app/services/eventService";
 import { createFavoriteEvent, deleteFavoriteEvent, fetchFavoriteEvents } from "@/app/services/favoriteService";
@@ -18,6 +18,11 @@ export default function EventList({ selectedDate }: EventListProps) {
   const [loading, setLoading] = useState(true);
   const { favorites, setFavorites, refreshFavorites, toggleRefreshFavorites } = useFavorites();
   const [favoriteSaveIds, setFavoriteSaveIds] = useState<{ [idActivity: number]: number }>({});
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  let isDragging = false;
+  let startX: number;
+  let scrollLeft: number;
 
   const initialize = useCallback(async () => {
     try {
@@ -102,9 +107,29 @@ export default function EventList({ selectedDate }: EventListProps) {
       })
     : events;
 
+  const handleMouseDown = (e: React.MouseEvent) => {
+    isDragging = true;
+    startX = e.pageX - (containerRef.current?.offsetLeft || 0);
+    scrollLeft = containerRef.current?.scrollLeft || 0;
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!isDragging) return;
+    e.preventDefault();
+    const x = e.pageX - (containerRef.current?.offsetLeft || 0);
+    const walk = x - startX;
+    if (containerRef.current) {
+      containerRef.current.scrollLeft = scrollLeft - walk;
+    }
+  };
+
+  const handleMouseUpOrLeave = () => {
+    isDragging = false;
+  };
+
   if (loading) {
     return (
-      <div className="flex-1">
+      <div className="flex-1 bg-white scrollbar-hide">
         <EventSkeleton />
       </div>
     );
@@ -112,17 +137,23 @@ export default function EventList({ selectedDate }: EventListProps) {
 
   if (filteredEvents.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center p-4">
+      <div className="flex flex-col items-center justify-center p-4 scrollbar-hide">
         <FaFrown size={48} color="#64748b" className="mb-4" />
-        <p className="text-lg font-semibold text-gray-600">
-          Não há eventos disponíveis no momento
-        </p>
+        <p className="text-lg font-semibold text-gray-600">Não há eventos disponíveis no momento</p>
       </div>
     );
   }
 
   return (
-    <div className="p-4">
+    <div
+      ref={containerRef}
+      className="p-1 h-screen overflow-y-auto scrollbar-hide"
+      onMouseDown={handleMouseDown}
+      onMouseMove={handleMouseMove}
+      onMouseUp={handleMouseUpOrLeave}
+      onMouseLeave={handleMouseUpOrLeave}
+      style={{ cursor: isDragging ? "grabbing" : "grab" }}
+    >
       <p className="text-lg font-bold mb-4 text-gray-800">Sua programação</p>
       {filteredEvents.map((event) => (
         <EventCard
@@ -131,6 +162,7 @@ export default function EventList({ selectedDate }: EventListProps) {
           isFavorite={favorites.includes(event.idActivity)}
           onFavoriteSuccess={handleSaveFavorite}
           onRemoveFavorite={() => handleRemoveFavorite(event.idActivity, favoriteSaveIds[event.idActivity])}
+          loadEvents={loadEvents}
         />
       ))}
     </div>

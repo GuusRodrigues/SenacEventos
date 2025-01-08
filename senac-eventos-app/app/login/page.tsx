@@ -69,7 +69,7 @@ const LoginScreen = () => {
           <label className="block mb-2 text-gray-700 font-bold">E-mail</label>
           <input
             type="email"
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+            className={`w-full px-3 text-gray-600 py-2 border rounded-md focus:outline-none focus:ring-2 ${
               emailError
                 ? "border-red-500 focus:ring-red-200"
                 : "border-blue-500 focus:ring-blue-200"

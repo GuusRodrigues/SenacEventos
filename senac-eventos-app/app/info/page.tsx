@@ -2,7 +2,15 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FaUser, FaPhone, FaUsers, FaGlobe, FaCheckCircle, FaMap } from "react-icons/fa";
+import {
+  FaUser,
+  FaPhone,
+  FaUsers,
+  FaGlobe,
+  FaCheckCircle,
+  FaMap,
+} from "react-icons/fa";
+import { IoChevronForward } from "react-icons/io5";
 import ContactModal from "../components/infoScreenModals/ContactModal";
 import ParticipantsModal from "../components/infoScreenModals/ParticipantsModal";
 import TravelGuideModal from "../components/infoScreenModals/TravelGuideModal";
@@ -10,7 +18,6 @@ import TranslatorModal from "../components/infoScreenModals/TranslatorModal";
 import EditProfileModal from "../components/infoScreenModals/EditProfileModal";
 import MyCheckinsModal from "../components/infoScreenModals/MyCheckinsModal";
 import TabNavigator from "../components/tabNavgator";
-
 
 const InfoScreen: React.FC = () => {
   const router = useRouter();
@@ -50,20 +57,6 @@ const InfoScreen: React.FC = () => {
     loadUserData();
   }, []);
 
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const handleSave = async () => {
-    try {
-      const updatedParticipant = {
-        ...formData,
-      };
-
-      localStorage.setItem("participant", JSON.stringify(updatedParticipant));
-      setModalVisible(false);
-    } catch (error) {
-      console.error("Erro ao salvar dados do usuário:", error);
-    }
-  };
-
   const handleLogout = async () => {
     try {
       localStorage.clear();
@@ -92,10 +85,10 @@ const InfoScreen: React.FC = () => {
           className="flex items-center justify-between w-full py-2 border-b border-gray-200"
         >
           <div className="flex items-center">
-            <FaUser size={20} />
+            <FaUser size={20} className="text-blue-500" />
             <span className="ml-2 text-black">Editar Perfil</span>
           </div>
-          <FaUser size={20} />
+          <IoChevronForward size={20} className="text-gray-400" />
         </button>
       </div>
 
@@ -106,50 +99,50 @@ const InfoScreen: React.FC = () => {
           className="flex items-center justify-between w-full py-2 border-b border-gray-200"
         >
           <div className="flex items-center">
-            <FaPhone size={20} />
+            <FaPhone size={20} className="text-blue-500" />
             <span className="ml-2 text-black">Contatos dos Coordenadores</span>
           </div>
-          <FaPhone size={20} />
+          <IoChevronForward size={20} className="text-gray-400" />
         </button>
         <button
           onClick={() => setModalParticipantsVisible(true)}
           className="flex items-center justify-between w-full py-2 border-b border-gray-200"
         >
-          <div className="flex items-center">
-            <FaUsers size={20} />
+          <div className="flex `items-center">
+            <FaUsers size={20} className="text-blue-500" />
             <span className="ml-2 text-black">Participantes</span>
           </div>
-          <FaUsers size={20} />
+          <IoChevronForward size={20} className="text-gray-400" />
         </button>
         <button
           onClick={() => setModalTranslatorVisible(true)}
           className="flex items-center justify-between w-full py-2 border-b border-gray-200"
         >
           <div className="flex items-center">
-            <FaGlobe size={20} />
+            <FaGlobe size={20} className="text-blue-500" />
             <span className="ml-2 text-black">Tradutor</span>
           </div>
-          <FaGlobe size={20} />
+          <IoChevronForward size={20} className="text-gray-400" />
         </button>
         <button
           onClick={() => setModalMyCheckinsVisible(true)}
           className="flex items-center justify-between w-full py-2 border-b border-gray-200"
         >
           <div className="flex items-center">
-            <FaCheckCircle size={20} />
+            <FaCheckCircle size={20} className="text-blue-500" />
             <span className="ml-2 text-black">Meus Check-ins</span>
           </div>
-          <FaCheckCircle size={20} />
+          <IoChevronForward size={20} className="text-gray-400" />
         </button>
         <button
           onClick={() => setModalTravelGuideVisible(true)}
           className="flex items-center justify-between w-full py-2"
         >
           <div className="flex items-center">
-            <FaMap size={20} />
+            <FaMap size={20} className="text-blue-500" />
             <span className="ml-2 text-black">Guia de Viagem</span>
           </div>
-          <FaMap size={20} />
+          <IoChevronForward size={20} className="text-gray-400" />
         </button>
       </div>
 
@@ -160,17 +153,14 @@ const InfoScreen: React.FC = () => {
         Sair da Conta
       </button>
 
-      {/* Modais */}
       <ContactModal visible={modalContactVisible} onClose={() => setModalContactVisible(false)} />
       <ParticipantsModal visible={modalParticipantsVisible} onClose={() => setModalParticipantsVisible(false)} />
       <TranslatorModal visible={modalTranslatorVisible} onClose={() => setModalTranslatorVisible(false)} />
       <TravelGuideModal visible={modalTravelGuideVisible} onClose={() => setModalTravelGuideVisible(false)} />
       <EditProfileModal visible={modalVisible} onClose={() => setModalVisible(false)} />
       <MyCheckinsModal visible={modalMyCheckinsVisible} onClose={() => setModalMyCheckinsVisible(false)} />
-      <TabNavigator /> 
-
+      <TabNavigator />
     </div>
-
   );
 };
 

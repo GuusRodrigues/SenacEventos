@@ -11,6 +11,7 @@ interface FavoriteEventCardProps {
 
 export default function FavoriteEventCard({
   favorite,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   onRemoveFavorite,
   isFavorited,
   onToggleFavorite,
@@ -31,7 +32,7 @@ export default function FavoriteEventCard({
   };
 
   return (
-    <div className="bg-white rounded-lg p-4 shadow-sm my-2">
+    <div className="bg-white rounded-lg p-4 shadow-lg my-2">
       <div className="flex justify-between items-center mb-3">
         <h3 className="text-lg font-bold text-gray-800">{activity.title || "Título não disponível"}</h3>
         <button onClick={handleToggleFavorite}>

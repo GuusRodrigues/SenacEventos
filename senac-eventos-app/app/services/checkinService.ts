@@ -1,4 +1,4 @@
-import { CreateCheckin, Checkin } from "@/interfaces/checkin";
+import { Checkin, CreateCheckin } from "../interfaces/checkin";
 import api, { DEBUG_MODE } from "./api";
 
 export const fetchCheckins = async (): Promise<Checkin[]> => {

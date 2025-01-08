@@ -24,9 +24,6 @@ export default function EventCard({
   const [isModalVisible, setModalVisible] = useState(false);
   const [hasCheckedIn, setHasCheckedIn] = useState(false);
 
-  const formattedDate = event.date.split("-").reverse().join("/");
-  const formattedTime = event.time.split(":").slice(0, 2).join(":");
-
   useEffect(() => {
     const checkIfCheckedIn = async () => {
       try {
@@ -35,44 +32,35 @@ export default function EventCard({
           setHasCheckedIn(false);
           return;
         }
-
         const participant = JSON.parse(storedParticipant);
         const isCheckedIn = event.checkins?.some(
           (checkin) => checkin.participant?.idParticipant === participant.idParticipant
         );
-
         setHasCheckedIn(!!isCheckedIn);
       } catch {
         setHasCheckedIn(false);
       }
     };
-
     checkIfCheckedIn();
   }, [event.checkins]);
 
   const handleFavorite = () => {
-    if (onFavoriteSuccess) {
-      onFavoriteSuccess(event);
-    }
+    if (onFavoriteSuccess) onFavoriteSuccess(event);
   };
 
   const handleRemoveFavorite = () => {
-    if (onRemoveFavorite) {
-      onRemoveFavorite();
-    }
+    if (onRemoveFavorite) onRemoveFavorite();
   };
 
   const handleCheckin = () => {
-    if (onCheckin) {
-      onCheckin(event);
-    }
+    if (onCheckin) onCheckin(event);
     setModalVisible(false);
   };
 
   return (
     <>
       <div
-        className="bg-white rounded-lg p-4 shadow-sm my-2 cursor-pointer hover:shadow-md transition-shadow"
+        className="bg-white rounded-lg p-4 shadow-lg my-2 cursor-pointer hover:shadow-xl transition-shadow"
         onClick={() => setModalVisible(true)}
       >
         <div className="flex justify-between items-center mb-3">
@@ -90,11 +78,11 @@ export default function EventCard({
         <div className="flex items-center mb-3">
           <div className="flex items-center mr-4">
             <FaCalendarAlt size={20} color="#0056D6" />
-            <p className="ml-2 text-sm text-blue-600">{formattedDate}</p>
+            <p className="ml-2 text-sm text-blue-600">{event.date.split("-").reverse().join("/")}</p>
           </div>
           <div className="flex items-center">
             <FaClock size={20} color="#0056D6" />
-            <p className="ml-2 text-sm text-blue-600">{formattedTime}</p>
+            <p className="ml-2 text-sm text-blue-600">{event.time.split(":").slice(0, 2).join(":")}</p>
           </div>
         </div>
         <h4 className="text-base font-semibold text-gray-800 mb-2">Sobre</h4>
@@ -103,22 +91,7 @@ export default function EventCard({
           <FaMapMarkerAlt size={20} color="#666" />
           <p className="ml-2 text-sm text-gray-600">{event.location}</p>
         </div>
-        {event.speaker && event.speaker.length > 0 && (
-          <>
-            <h4 className="text-base font-semibold text-gray-800 mb-2">Palestrantes</h4>
-            {event.speaker.map((speaker) => (
-              <div key={speaker.idSpeaker} className="mb-2">
-                <p className="text-sm text-gray-800 font-bold">{speaker.name}</p>
-                <p className="text-sm text-gray-600">{speaker.description}</p>
-                <p className="text-sm text-gray-500">
-                  {speaker.role} - {speaker.company}
-                </p>
-              </div>
-            ))}
-          </>
-        )}
       </div>
-
       {isModalVisible && (
         <EventDetails
           event={event}

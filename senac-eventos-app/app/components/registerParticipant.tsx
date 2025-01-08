@@ -103,7 +103,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       </h1>
       <div className="mb-4">
         <input
-          className={`w-full p-3 rounded-lg border ${
+          className={`w-full p-3 rounded-lg border text-gray-600 ${
             errors.name ? "border-red-500" : "border-blue-300"
           }`}
           placeholder="Nome*"
@@ -116,7 +116,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       </div>
       <div className="mb-4">
         <input
-          className={`w-full p-3 rounded-lg border ${
+          className={`w-full p-3 rounded-lg border text-gray-600 ${
             errors.email ? "border-red-500" : "border-blue-300"
           }`}
           placeholder="Email*"
@@ -130,7 +130,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       </div>
       <div className="mb-4">
         <input
-          className={`w-full p-3 rounded-lg border ${
+          className={`w-full p-3 rounded-lg text-gray-600 border ${
             errors.position ? "border-red-500" : "border-blue-300"
           }`}
           placeholder="Cargo*"
@@ -143,7 +143,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       </div>
       <div className="mb-4">
         <input
-          className={`w-full p-3 rounded-lg border ${
+          className={`w-full p-3 rounded-lg border text-gray-600 ${
             errors.contact ? "border-red-500" : "border-blue-300"
           }`}
           placeholder="Contato*"
@@ -157,7 +157,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       </div>
       <div className="mb-4">
         <input
-          className="w-full p-3 rounded-lg border border-blue-300"
+          className="w-full p-3 rounded-lg border text-gray-600 border-blue-300"
           placeholder="Nome da Empresa (Opcional)"
           value={companyName}
           onChange={(e) => setCompanyName(e.target.value)}
@@ -189,7 +189,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
           labelledBy="Selecione as Áreas"
         />
         {errors.selectedAreas && (
-          <p className="text-red-500 text-sm mt-1">
+          <p className="text-red-500 text-sm mt-1 ">
             Selecione pelo menos uma área.
           </p>
         )}
