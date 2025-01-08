@@ -1,17 +1,23 @@
-import React, { useState } from 'react';
-import TourismInfoCard from './TourismInfoCard';
-import HotelInfoCard from './HotelInfoCard';
-import FlightInfoCard from './FlightInfoCard';
+import React, { useState } from "react";
+import { MdFlight, MdHotel, MdDirectionsCar } from "react-icons/md";
+import TourismInfoCard from "./TourismInfoCard";
+import HotelInfoCard from "./HotelInfoCard";
+import FlightInfoCard from "./FlightInfoCard";
 
 interface TravelGuideModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
-const TravelGuideModal: React.FC<TravelGuideModalProps> = ({ visible, onClose }) => {
-  const [currentSubModal, setCurrentSubModal] = useState<'flight' | 'hotel' | 'tourism' | null>(null);
+const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
+  visible,
+  onClose,
+}) => {
+  const [currentSubModal, setCurrentSubModal] = useState<"flight" | "hotel" | "tourism" | null>(
+    null
+  );
 
-  const openSubModal = (modalType: 'flight' | 'hotel' | 'tourism') => {
+  const openSubModal = (modalType: "flight" | "hotel" | "tourism") => {
     setCurrentSubModal(modalType);
   };
 
@@ -25,27 +31,29 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({ visible, onClose })
     <div className="fixed inset-0 bg-gray-900 bg-opacity-50 flex justify-center items-center z-50">
       {!currentSubModal && (
         <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
-          <h2 className="text-2xl font-bold text-center mb-6">Hospedagem e Transporte</h2>
+          <h2 className="text-2xl font-bold text-center mb-6">
+            Hospedagem e Transporte
+          </h2>
           <div className="flex justify-around">
             <button
               className="flex flex-col items-center"
-              onClick={() => openSubModal('flight')}
+              onClick={() => openSubModal("flight")}
             >
-              <span className="material-icons text-6xl text-gray-800">flight</span>
+              <MdFlight className="text-6xl text-gray-800" />
               <span className="mt-2 text-lg">Voo</span>
             </button>
             <button
               className="flex flex-col items-center"
-              onClick={() => openSubModal('hotel')}
+              onClick={() => openSubModal("hotel")}
             >
-              <span className="material-icons text-6xl text-gray-800">hotel</span>
+              <MdHotel className="text-6xl text-gray-800" />
               <span className="mt-2 text-lg">Hospedagem</span>
             </button>
             <button
               className="flex flex-col items-center"
-              onClick={() => openSubModal('tourism')}
+              onClick={() => openSubModal("tourism")}
             >
-              <span className="material-icons text-6xl text-gray-800">directions_car</span>
+              <MdDirectionsCar className="text-6xl text-gray-800" />
               <span className="mt-2 text-lg">Turismo</span>
             </button>
           </div>
@@ -61,14 +69,14 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({ visible, onClose })
       {currentSubModal && (
         <div className="bg-white rounded-lg shadow-lg p-6 w-11/12 max-w-lg">
           <h2 className="text-2xl font-bold text-center mb-6">
-            {currentSubModal === 'flight' && 'Informações sobre Voos'}
-            {currentSubModal === 'hotel' && 'Informações sobre Hospedagem'}
-            {currentSubModal === 'tourism' && 'Informações sobre Turismo'}
+            {currentSubModal === "flight" && "Informações sobre Voos"}
+            {currentSubModal === "hotel" && "Informações sobre Hospedagem"}
+            {currentSubModal === "tourism" && "Informações sobre Turismo"}
           </h2>
           <div className="overflow-y-auto max-h-96">
-            {currentSubModal === 'flight' && <FlightInfoCard />}
-            {currentSubModal === 'hotel' && <HotelInfoCard />}
-            {currentSubModal === 'tourism' && <TourismInfoCard />}
+            {currentSubModal === "flight" && <FlightInfoCard />}
+            {currentSubModal === "hotel" && <HotelInfoCard />}
+            {currentSubModal === "tourism" && <TourismInfoCard />}
           </div>
           <button
             onClick={closeSubModal}
