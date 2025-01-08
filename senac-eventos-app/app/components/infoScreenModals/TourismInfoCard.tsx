@@ -1,6 +1,5 @@
-import React from 'react';
-import { View, Text, Platform } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+import React from "react";
+import { FaBuilding, FaCalendar, FaMapMarkerAlt, FaLightbulb } from "react-icons/fa";
 
 const TourismInfoCard: React.FC = () => {
   const tourismInfoData = [
@@ -11,7 +10,7 @@ const TourismInfoCard: React.FC = () => {
         "Visitas técnicas a lojas na 5th Avenue",
         "11 de janeiro: City tour cultural",
       ],
-      icon: "building",
+      icon: <FaBuilding size={28} className="text-blue-500 mr-4" />,
     },
     {
       title: "Programação NRF",
@@ -20,7 +19,7 @@ const TourismInfoCard: React.FC = () => {
         "13 de janeiro: NRF das 8h às 17h",
         "14 de janeiro: NRF das 8h às 17h",
       ],
-      icon: "calendar",
+      icon: <FaCalendar size={28} className="text-blue-500 mr-4" />,
     },
     {
       title: "Visitas Especiais",
@@ -29,7 +28,7 @@ const TourismInfoCard: React.FC = () => {
         "Visita à Câmara de Comércio de New York às 15h",
         "16 de janeiro: Visitas técnicas pela manhã",
       ],
-      icon: "map-marker",
+      icon: <FaMapMarkerAlt size={28} className="text-blue-500 mr-4" />,
     },
     {
       title: "Dicas Úteis",
@@ -39,33 +38,30 @@ const TourismInfoCard: React.FC = () => {
         "Mantenha os documentos necessários sempre à mão",
         "Planeje o transporte com antecedência para evitar atrasos",
       ],
-      icon: "lightbulb-o",
+      icon: <FaLightbulb size={28} className="text-blue-500 mr-4" />,
     },
   ];
 
   return (
-    <View className="p-4 mb-14 bg-white">
-      <Text className="text-xl font-bold text-blue-500 mb-6">Informações de Turismo</Text>
+    <div className="p-6 bg-white shadow-lg rounded-lg">
+      <h2 className="text-2xl font-bold text-blue-500 mb-6">Informações de Turismo</h2>
       {tourismInfoData.map((info, index) => (
-        <View
-          key={index}
-          className="bg-gray-100 p-6 rounded-lg mb-6 shadow-md"
-        >
-          <View className="flex-row items-start mb-4">
-            <Icon name={info.icon} size={28} color="#3b82f6" className="mr-4" />
-            <Text className="text-lg font-semibold text-blue-500 flex-shrink">{info.title}</Text>
-          </View>
-
-          {/* Lista de itens */}
-          {info.items.map((item, itemIndex) => (
-            <View key={itemIndex} className="flex flex-row items-start mb-2">
-              <Icon name="check-circle" size={16} color="#3b82f6" className="mr-2" />
-              <Text className="text-gray-700 flex-1">{item}</Text>
-            </View>
-          ))}
-        </View>
+        <div key={index} className="bg-gray-100 p-6 rounded-lg mb-6 shadow-md">
+          <div className="flex items-start mb-4">
+            {info.icon}
+            <h3 className="text-lg font-semibold text-blue-500">{info.title}</h3>
+          </div>
+          <ul className="list-disc list-inside space-y-2">
+            {info.items.map((item, itemIndex) => (
+              <li key={itemIndex} className="flex items-start space-x-2">
+                <FaLightbulb size={16} className="text-blue-500" />
+                <span className="text-gray-700">{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
       ))}
-    </View>
+    </div>
   );
 };
 

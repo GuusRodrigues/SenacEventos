@@ -1,42 +1,35 @@
+"use client";
+
+import { AreaOfExpertiseDTO } from "@/app/interfaces/areaOfExpertise";
+import { Participant } from "@/app/interfaces/participant";
+import { getAllAreas } from "@/app/services/areaService";
+import { updateParticipant } from "@/app/services/participantService";
 import React, { useEffect, useState } from "react";
-import {
-  Modal,
-  View,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  FlatList,
-  Platform,
-  ActivityIndicator,
-} from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { updateParticipant } from "@/services/participantService";
-import useFormatPhone from "@/hooks/useFormatPhone";
-import MultiSelect from "react-native-multiple-select";
-import { getAllAreas } from "@/services/areaService";
+import { MultiSelect } from "react-multi-select-component";
 
 interface EditProfileModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
-const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose }) => {
-  const [formData, setFormData] = useState<any>({});
-  const [areas, setAreas] = useState<any[]>([]);
+const EditProfileModal: React.FC<EditProfileModalProps> = ({
+  visible,
+  onClose,
+}) => {
+  const [formData, setFormData] = useState<Partial<Participant> & { idArea?: number[] }>({});
+  const [areas, setAreas] = useState<AreaOfExpertiseDTO[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
-  const [areasLoading, setAreasLoading] = useState(true);
-  const { formatPhone } = useFormatPhone();
 
   useEffect(() => {
     const loadUserData = async () => {
       if (visible) {
         try {
-          const storedUserData = await AsyncStorage.getItem("participant");
+          const storedUserData = localStorage.getItem("participant");
           if (storedUserData) {
-            const userData = JSON.parse(storedUserData);
+            const userData: Participant = JSON.parse(storedUserData);
             setFormData(userData);
-            const areaIds = userData.AreaOfExpertise?.map((area: any) => area.idArea) || [];
+            const areaIds = userData.AreaOfExpertise?.map((area) => area.idArea) || [];
             setSelectedAreas(areaIds);
           }
         } finally {
@@ -49,8 +42,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose })
       try {
         const areasData = await getAllAreas();
         setAreas(areasData);
-      } finally {
-        setAreasLoading(false);
+      } catch (error) {
+        console.error("Erro ao carregar áreas:", error);
       }
     };
 
@@ -58,150 +51,128 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({ visible, onClose })
     loadAreas();
   }, [visible]);
 
-  const handleInputChange = (field: string, value: string) => {
-    if (field === "contact") {
-      const cleaned = value.replace(/\D/g, "");
-      if (cleaned.length > 11) return;
-      setFormData((prev: any) => ({
-        ...prev,
-        [field]: cleaned,
-      }));
-    } else {
-      setFormData((prev: any) => ({
-        ...prev,
-        [field]: value,
-      }));
-    }
+  const handleInputChange = (field: keyof Participant, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
   };
 
   const handleSave = async () => {
-    const { postPermission, AreaOfExpertise, ...updatedData } = formData;
-    updatedData.idArea = selectedAreas; // Adiciona o idArea no payload
-  
-    await updateParticipant(updatedData);
-  
-    // Atualiza o AsyncStorage com os dados atualizados e as áreas de especialização
-    await AsyncStorage.setItem(
-      "participant",
-      JSON.stringify({
-        ...updatedData,
-        AreaOfExpertise: selectedAreas.map((id) =>
-          areas.find((area) => area.idArea === id)
-        ),
-      })
-    );
-  
-    onClose();
-  };
+    // Prepara os dados para salvar
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { AreaOfExpertise, ...updatedData } = formData;
+    updatedData.idArea = selectedAreas;
 
-  if (loading || areasLoading) {
-    return (
-      <Modal animationType="slide" transparent={false} visible={visible}>
-        <View className="flex-1 justify-center items-center bg-gray-100">
-          <ActivityIndicator size="large" color="#0056D6" />
-          <Text className="text-gray-700 mt-4">Carregando...</Text>
-        </View>
-      </Modal>
-    );
-  }
-
-  const renderField = ({ item }: { item: [string, any] }) => {
-    const [key, value] = item;
-
-    if (key === "idParticipant" || key === "postPermission" || key === "email" || key === "AreaOfExpertise" || key === "idArea") {
-      return null;
+    try {
+      await updateParticipant(updatedData as Participant);
+      // Atualiza os dados no localStorage
+      localStorage.setItem(
+        "participant",
+        JSON.stringify({
+          ...updatedData,
+          AreaOfExpertise: selectedAreas.map((id) =>
+            areas.find((area) => area.idArea === id)
+          ),
+        })
+      );
+      onClose();
+    } catch (error) {
+      console.error("Erro ao salvar dados do usuário:", error);
     }
-
-    return (
-      <View key={key} className="mb-4 mx-2">
-        <Text className="text-sm font-bold text-gray-700 mb-1">
-          {key === "name" ? "Nome" :
-            key === "position" ? "Cargo" :
-            key === "contact" ? "Contato" :
-            key === "companyName" ? "Empresa" :
-            key}
-        </Text>
-        <TextInput
-          placeholder={`Digite ${
-            key === "name" ? "o Nome" :
-            key === "position" ? "o Cargo" :
-            key === "contact" ? "o Contato" :
-            key === "companyName" ? "a Empresa" :
-            key}`}
-          className="border border-gray-300 p-2 rounded"
-          keyboardType={key === "contact" ? "phone-pad" : "default"}
-          value={key === "contact" ? formatPhone(value.toString()) : value.toString()}
-          onChangeText={(text) => handleInputChange(key, text)}
-        />
-      </View>
-    );
   };
+
+  if (!visible) return null;
 
   return (
-    <Modal animationType="slide" transparent={false} visible={visible} onRequestClose={onClose}>
-      <View className={`flex-1 p-1 bg-white ${Platform.OS === "ios" ? "pt-16" : "pt-6"}`}>
-        <View className="p-4 border-b border-gray-300">
-          <Text className="text-xl font-bold text-black">Editar Perfil</Text>
-        </View>
-        <FlatList
-          data={Object.entries(formData)}
-          renderItem={renderField}
-          keyExtractor={(item) => item[0]}
-          ListFooterComponent={
-            <>
-              <View className="mb-4">
-                <Text className="text-sm font-bold text-gray-700 mb-1">Áreas de Especialização</Text>
-                <MultiSelect
-                  items={areas.map((area: any) => ({
-                    id: area.idArea.toString(),
-                    name: area.name,
-                  }))}
-                  uniqueKey="id"
-                  onSelectedItemsChange={(selected) => setSelectedAreas(selected.map(Number))}
-                  selectedItems={selectedAreas.map(String)}
-                  searchInputPlaceholderText="Digite para pesquisar"
-                  tagRemoveIconColor="#0056D6"
-                  tagBorderColor="#0056D6"
-                  tagTextColor="#0056D6"
-                  selectedItemTextColor="#0056D6"
-                  selectedItemIconColor="#0056D6"
-                  itemTextColor="#000"
-                  displayKey="name"
-                  searchInputStyle={{ color: "#0056D6" }}
-                  submitButtonColor="#0056D6"
-                  submitButtonText="Confirmar"
-                  selectText="Selecione as Áreas"
-                  noItemsText="Nenhuma área encontrada"
-                  selectedText="selecionado(s)"
-                  styleDropdownMenuSubsection={{
-                    borderWidth: 1,
-                    borderColor: "#6e99df",
-                    borderRadius: 5,
-                    paddingVertical: 12,
-                    paddingHorizontal: 15,
-                    backgroundColor: "#fff",
-                  }}
-                />
-              </View>
-              <View className="mb-4">
-                <Text className="text-sm font-bold text-gray-700 mb-1">E-mail</Text>
-                <TextInput
-                  className="border border-gray-300 p-2 rounded bg-gray-100 text-gray-500"
-                  value={formData.email || ""}
-                  editable={false}
-                />
-              </View>
-            </>
-          }
-        />
-        <TouchableOpacity onPress={handleSave} className="bg-blue-500 w-full mb-5 p-4">
-          <Text className="text-white text-center text-lg font-bold">Salvar</Text>
-        </TouchableOpacity>
-        <TouchableOpacity onPress={onClose} className="w-full mb-5 p-4">
-          <Text className="text-blue-500 text-center text-lg font-bold">Cancelar</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-lg">
+        <h2 className="text-lg font-bold text-gray-800 mb-4">Editar Perfil</h2>
+        {loading ? (
+          <div className="flex items-center justify-center">
+            <div className="spinner-border animate-spin inline-block w-8 h-8 border-4 rounded-full"></div>
+            <p className="ml-4 text-gray-700">Carregando...</p>
+          </div>
+        ) : (
+          <>
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-1">Nome</label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 p-2 rounded"
+                value={formData.name || ""}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-1">Cargo</label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 p-2 rounded"
+                value={formData.position || ""}
+                onChange={(e) => handleInputChange("position", e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-1">Contato</label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 p-2 rounded"
+                value={formData.contact || ""}
+                onChange={(e) => handleInputChange("contact", e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-1">Empresa</label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 p-2 rounded"
+                value={formData.companyName || ""}
+                onChange={(e) => handleInputChange("companyName", e.target.value)}
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-1">Áreas de Especialização</label>
+              <MultiSelect
+                options={areas.map((area) => ({
+                  label: area.name,
+                  value: area.idArea,
+                }))}
+                value={selectedAreas.map((id) => {
+                  const area = areas.find((area) => area.idArea === id);
+                  return area ? { label: area.name, value: area.idArea } : undefined;
+                }).filter((area): area is { label: string; value: number } => area !== undefined)}
+                onChange={(selected: { label: string; value: number }[]) =>
+                  setSelectedAreas(selected.map((option) => option.value))
+                }
+                labelledBy="Selecione as Áreas"
+              />
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-bold text-gray-700 mb-1">E-mail</label>
+              <input
+                type="text"
+                className="w-full border border-gray-300 p-2 rounded bg-gray-100 text-gray-500"
+                value={formData.email || ""}
+                readOnly
+              />
+            </div>
+            <button
+              onClick={handleSave}
+              className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold mb-4"
+            >
+              Salvar
+            </button>
+            <button
+              onClick={onClose}
+              className="w-full bg-gray-300 text-black py-2 rounded-lg font-bold"
+            >
+              Cancelar
+            </button>
+          </>
+        )}
+      </div>
+    </div>
   );
 };
 

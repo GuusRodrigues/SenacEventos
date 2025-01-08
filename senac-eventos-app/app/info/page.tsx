@@ -3,12 +3,13 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaUser, FaPhone, FaUsers, FaGlobe, FaCheckCircle, FaMap } from "react-icons/fa";
-import ContactModal from "@/components/infoScreenModals/ContactModal";
-import ParticipantsModal from "@/components/infoScreenModals/ParticipantsModal";
-import TranslatorModal from "@/components/infoScreenModals/TranslatorModal";
-import TravelGuideModal from "@/components/infoScreenModals/TravelGuideModal";
-import MyCheckinsModal from "@/components/infoScreenModals/MyCheckinsModal";
-import EditProfileModal from "@/components/infoScreenModals/EditProfileModal";
+import ContactModal from "../components/infoScreenModals/ContactModal";
+import ParticipantsModal from "../components/infoScreenModals/ParticipantsModal";
+import TravelGuideModal from "../components/infoScreenModals/TravelGuideModal";
+import TranslatorModal from "../components/infoScreenModals/TranslatorModal";
+import EditProfileModal from "../components/infoScreenModals/EditProfileModal";
+import MyCheckinsModal from "../components/infoScreenModals/MyCheckinsModal";
+
 
 const InfoScreen: React.FC = () => {
   const router = useRouter();
@@ -48,6 +49,7 @@ const InfoScreen: React.FC = () => {
     loadUserData();
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSave = async () => {
     try {
       const updatedParticipant = {

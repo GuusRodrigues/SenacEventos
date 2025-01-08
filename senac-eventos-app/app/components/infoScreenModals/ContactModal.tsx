@@ -1,68 +1,75 @@
-  import React, { useEffect, useState } from 'react';
-  import { Modal, ScrollView, ActivityIndicator, Platform, View, Text, TouchableOpacity } from 'react-native';
-  import { getAllParticipants } from '@/services/participantService';
-  import { Participant } from '@/interfaces/participantInterface';
-  import useFormatPhone from '@/hooks/useFormatPhone';
+import useFormatPhone from '@/app/hooks/useFormatPhone';
+import { Participant } from '@/app/interfaces/participant';
+import { getAllParticipants } from '@/app/services/participantService';
+import React, { useEffect, useState } from 'react';
 
-  interface ContactModalProps {
-    visible: boolean;
-    onClose: () => void;
-  }
+interface ContactModalProps {
+  visible: boolean;
+  onClose: () => void;
+}
 
-  const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
-    const { formatPhone } = useFormatPhone();
-    const [contacts, setContacts] = useState<Participant[]>([]);
-    const [loading, setLoading] = useState<boolean>(true);
+const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
+  const { formatPhone } = useFormatPhone();
+  const [contacts, setContacts] = useState<Participant[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
-      if (visible) {
-        loadContacts();
-      }
-    }, [visible]);
+  useEffect(() => {
+    if (visible) {
+      loadContacts();
+    }
+  }, [visible]);
 
-    const loadContacts = async () => {
-      try {
-        setLoading(true);
-        const data = await getAllParticipants();
-        const filteredContacts = data.filter((contact) => contact.postPermission === 1);
-        setContacts(filteredContacts);
-      } catch (error) {
-        console.error('Erro ao carregar contatos:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    return (
-      <Modal animationType="slide" transparent={false} visible={visible} onRequestClose={onClose}>
-        <View className={`flex-1 bg-white ${Platform.OS === 'ios' ? 'pt-16' : 'pt-6'}`}>
-          <View className="p-4 border-b border-gray-300">
-            <Text className="text-xl font-bold text-black">Contatos dos Coordenadores</Text>
-          </View>
-
-          {loading ? (
-            <View className="flex-1 justify-center items-center">
-              <ActivityIndicator size="large" color="#0000ff" />
-            </View>
-          ) : (
-            <ScrollView className="p-4">
-              {contacts.map((contact) => (
-                <View key={contact.idParticipant} className="bg-gray-100 p-4 rounded-lg mb-4 shadow">
-                  <Text className="text-base font-bold text-black">{contact.name}</Text>
-                  <Text className="text-sm text-gray-600">Contato: {formatPhone(contact.contact)}</Text>
-                  <Text className="text-sm text-gray-600">Cargo: {contact.position}</Text>
-                  <Text className="text-sm text-gray-600">Empresa: {contact.companyName}</Text>
-                </View>
-              ))}
-            </ScrollView>
-          )}
-
-          <TouchableOpacity onPress={onClose} className="bg-blue-500 w-full mb-5 p-4">
-            <Text className="text-white text-center text-lg font-bold">Fechar</Text>
-          </TouchableOpacity>
-        </View>
-      </Modal>
-    );
+  const loadContacts = async () => {
+    try {
+      setLoading(true);
+      const data = await getAllParticipants();
+      const filteredContacts = data.filter((contact) => contact.postPermission === 1);
+      setContacts(filteredContacts);
+    } catch (error) {
+      console.error('Erro ao carregar contatos:', error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  export default ContactModal;
+  if (!visible) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+      <div className="w-full max-w-2xl bg-white rounded-lg shadow-lg">
+        {/* Header */}
+        <div className="p-4 border-b border-gray-300">
+          <h2 className="text-xl font-bold text-black">Contatos dos Coordenadores</h2>
+        </div>
+
+        {/* Loading State */}
+        {loading ? (
+          <div className="flex items-center justify-center p-8">
+            <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500"></div>
+          </div>
+        ) : (
+          <div className="p-4 max-h-[70vh] overflow-y-auto">
+            {contacts.map((contact) => (
+              <div key={contact.idParticipant} className="bg-gray-100 p-4 rounded-lg mb-4 shadow">
+                <p className="text-base font-bold text-black">{contact.name}</p>
+                <p className="text-sm text-gray-600">Contato: {formatPhone(contact.contact)}</p>
+                <p className="text-sm text-gray-600">Cargo: {contact.position}</p>
+                <p className="text-sm text-gray-600">Empresa: {contact.companyName}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="w-full bg-blue-500 text-white text-lg font-bold py-4 hover:bg-blue-600"
+        >
+          Fechar
+        </button>
+      </div>
+    </div>
+  );
+};
+
+export default ContactModal;

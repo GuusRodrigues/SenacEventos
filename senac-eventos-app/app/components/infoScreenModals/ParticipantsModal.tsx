@@ -1,16 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, ScrollView, ActivityIndicator, Platform, View, Text, TouchableOpacity } from 'react-native';
-import { getAllParticipants } from '@/services/participantService';
-import useFormatPhone from '@/hooks/useFormatPhone';
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { getAllParticipants } from "@/app/services/participantService";
+import { Participant } from "@/app/interfaces/participant";
+
 
 interface ParticipantsModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
-const ParticipantsModal: React.FC<ParticipantsModalProps> = ({ visible, onClose }) => {
-  const { formatPhone } = useFormatPhone();
-  const [participants, setParticipants] = useState<any[]>([]);
+const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
+  visible,
+  onClose,
+}) => {
+  const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -22,50 +26,57 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({ visible, onClose 
   const loadParticipants = async () => {
     try {
       setLoading(true);
-      const data = await getAllParticipants();
+      const data: Participant[] = await getAllParticipants();
       setParticipants(data);
     } catch (error) {
-      console.error('Erro ao carregar participantes:', error);
+      console.error("Erro ao carregar participantes:", error);
     } finally {
       setLoading(false);
     }
   };
 
+  if (!visible) return null;
+
   return (
-    <Modal animationType="slide" transparent={false} visible={visible} onRequestClose={onClose}>
-      <View className={`flex-1 bg-white ${Platform.OS === 'ios' ? 'pt-16' : 'pt-6'}`}>
-        <View className="p-4 border-b border-gray-300">
-          <Text className="text-xl font-bold text-black">Participantes</Text>
-        </View>
-
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">Participantes</h2>
         {loading ? (
-          <View className="flex-1 justify-center items-center">
-            <ActivityIndicator size="large" color="#0000ff" />
-          </View>
+          <div className="flex justify-center items-center h-32">
+            <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            <p className="ml-4 text-gray-600">Carregando participantes...</p>
+          </div>
         ) : (
-          <ScrollView className="p-4">
-            {participants.map((participant, index) => (
-              <View
-                key={index}
-                className="bg-gray-100 p-4 rounded-lg mb-4 shadow"
+          <div className="space-y-4">
+            {participants.map((participant) => (
+              <div
+                key={participant.idParticipant}
+                className="bg-gray-100 p-4 rounded-lg shadow"
               >
-                <Text className="text-base font-bold text-black">{participant.name}</Text>
-                <Text className="text-sm text-gray-600">Contato: {formatPhone(participant.contact)}</Text>
-                <Text className="text-sm text-gray-600">Cargo: {participant.position}</Text>
-                <Text className="text-sm text-gray-600">Empresa: {participant.companyName}</Text>
-              </View>
+                <h3 className="text-lg font-bold text-gray-800">
+                  {participant.name}
+                </h3>
+                <p className="text-sm text-gray-600">
+                  Contato: {participant.contact}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Cargo: {participant.position}
+                </p>
+                <p className="text-sm text-gray-600">
+                  Empresa: {participant.companyName || "Não especificada"}
+                </p>
+              </div>
             ))}
-          </ScrollView>
+          </div>
         )}
-
-        <TouchableOpacity
-          onPress={onClose}
-          className="bg-blue-500 w-full mb-5 p-4"
+        <button
+          onClick={onClose}
+          className="w-full bg-blue-500 text-white py-2 rounded-lg font-bold mt-4"
         >
-          <Text className="text-white text-center text-lg font-bold">Fechar</Text>
-        </TouchableOpacity>
-      </View>
-    </Modal>
+          Fechar
+        </button>
+      </div>
+    </div>
   );
 };
 

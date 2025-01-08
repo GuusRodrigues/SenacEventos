@@ -1,17 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, View, Text, TouchableOpacity, FlatList, ActivityIndicator, Platform } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Checkin } from '@/interfaces/checkinInterface';
-import { fetchCheckinsByParticipant } from '@/services/checkinService';
-import { fetchEventById } from '@/services/eventService';
-import MyCheckinsCard from './MyCheckinsCard';
+"use client";
+
+import React, { useEffect, useState } from "react";
+import { fetchCheckinsByParticipant } from "@/app/services/checkinService";
+import { fetchEventById } from "@/app/services/eventService";
+import MyCheckinsCard from "./MyCheckinsCard";
+import { Checkin } from "@/app/interfaces/checkin";
 
 interface MyCheckinsModalProps {
   visible: boolean;
   onClose: () => void;
 }
 
-const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({ visible, onClose }) => {
+const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
+  visible,
+  onClose,
+}) => {
   const [checkins, setCheckins] = useState<Checkin[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [eventNames, setEventNames] = useState<{ [key: number]: string }>({});
@@ -19,15 +22,17 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({ visible, onClose }) =
   const loadCheckins = async () => {
     setLoading(true);
     try {
-      const storedParticipant = await AsyncStorage.getItem('participant');
+      const storedParticipant = localStorage.getItem("participant");
       if (!storedParticipant) {
         return;
       }
       const participant = JSON.parse(storedParticipant);
-      const checkinsData = await fetchCheckinsByParticipant(participant.idParticipant);
+      const checkinsData = await fetchCheckinsByParticipant(
+        participant.idParticipant
+      );
       setCheckins(checkinsData);
     } catch (error) {
-      console.error('Erro ao carregar check-ins:', error);
+      console.error("Erro ao carregar check-ins:", error);
     } finally {
       setLoading(false);
     }
@@ -47,7 +52,7 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({ visible, onClose }) =
           const event = await fetchEventById(checkin.idActivity);
           events[checkin.idActivity] = event.title;
         } catch (error) {
-          console.error('Erro ao carregar o nome do evento:', error);
+          console.error("Erro ao carregar o nome do evento:", error);
         }
       }
       setEventNames(events);
@@ -58,46 +63,44 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({ visible, onClose }) =
     }
   }, [checkins]);
 
+  if (!visible) return null;
+
   return (
-    <Modal
-      visible={visible}
-      animationType="slide"
-      onRequestClose={onClose}
-    >
-      <View className={`flex-1 bg-gray-100 ${Platform.OS === 'ios' ? 'pt-16' : 'pt-6'} px-4`}>
-        <Text className="text-2xl font-bold text-black text-center mb-4">Meus Check-ins</Text>
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+      <div className="bg-white rounded-lg p-6 w-full max-w-3xl max-h-[90vh] overflow-y-auto relative">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-4">
+          Meus Check-ins
+        </h2>
         {loading ? (
-          <View className="flex-1 justify-center items-center">
-            <ActivityIndicator size="large" color="#0000ff" />
-            <Text className="mt-2 text-lg text-gray-600">Carregando check-ins...</Text>
-          </View>
+          <div className="flex flex-col items-center justify-center h-64">
+            <div className="animate-spin h-10 w-10 border-4 border-blue-500 border-t-transparent rounded-full"></div>
+            <p className="text-lg text-gray-600 mt-2">Carregando check-ins...</p>
+          </div>
         ) : (
-          <FlatList
-            data={checkins}
-            renderItem={({ item }) => (
-              <MyCheckinsCard
-                eventName={eventNames[item.idActivity] || 'Carregando...'}
-                checkinDateTime={item.checkinDateTime}
-              />
-            )}
-            keyExtractor={(item) => item.idCheckin.toString()}
-            ListEmptyComponent={
-              <Text className="text-center text-lg text-gray-600">
+          <div className="space-y-4">
+            {checkins.length > 0 ? (
+              checkins.map((item) => (
+                <MyCheckinsCard
+                  key={item.idCheckin}
+                  eventName={eventNames[item.idActivity] || "Carregando..."}
+                  checkinDateTime={item.checkinDateTime}
+                />
+              ))
+            ) : (
+              <p className="text-center text-lg text-gray-600">
                 Você não tem check-ins registrados.
-              </Text>
-            }
-          />
+              </p>
+            )}
+          </div>
         )}
-        <View className="absolute bottom-5 left-0 right-0">
-          <TouchableOpacity
-            onPress={onClose}
-            className="bg-blue-500 p-4 rounded-none w-full justify-center items-center"
-          >
-            <Text className="text-white text-lg font-bold">Fechar</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    </Modal>
+        <button
+          onClick={onClose}
+          className="bg-blue-500 text-white py-2 px-4 rounded-lg w-full mt-4"
+        >
+          Fechar
+        </button>
+      </div>
+    </div>
   );
 };
 

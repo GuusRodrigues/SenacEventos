@@ -1,50 +1,59 @@
 import React from 'react';
-import { View, Text } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5'; // Atualizado para FontAwesome5
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { 
+  faDumbbell, 
+  faUtensils, 
+  faGlobe, 
+  faChild, 
+  faWifi, 
+  faBuilding 
+} from '@fortawesome/free-solid-svg-icons';
 
-const HotelInfoCard: React.FC = () => {
+const HotelInfoCard = () => {
   const hotelInfo = {
     hotelName: "Millennium Hotel Broadway Times Square",
     address: "145 W 44th St, New York, NY 10036, United States",
     checkIn: "14h00",
     checkOut: "12h00",
     services: [
-      { name: "Academia", icon: "dumbbell" }, // Suportado no FontAwesome5
-      { name: "Restaurante e Bar", icon: "utensils" },
-      { name: "Equipe Multilíngue", icon: "globe" },
-      { name: "Programa Infantil 'Ask Alfred'", icon: "child" },
-      { name: "Wi-Fi Cortesia", icon: "wifi" },
-      { name: "Instalações para Reuniões e Eventos", icon: "building" },
+      { name: "Academia", icon: faDumbbell },
+      { name: "Restaurante e Bar", icon: faUtensils },
+      { name: "Equipe Multilíngue", icon: faGlobe },
+      { name: "Programa Infantil 'Ask Alfred'", icon: faChild },
+      { name: "Wi-Fi Cortesia", icon: faWifi },
+      { name: "Instalações para Reuniões e Eventos", icon: faBuilding },
     ],
   };
 
   return (
-    <View className="flex-1 bg-white">
-      <View className="p-6 border-b border-gray-300">
-        <Text className="text-2xl font-bold text-blue-500">{hotelInfo.hotelName}</Text>
-        <Text className="text-gray-700">{hotelInfo.address}</Text>
-        <Text className="text-gray-700 mt-2">
-          Check-in: <Text className="text-blue-500">{hotelInfo.checkIn}</Text> | Check-out:{" "}
-          <Text className="text-blue-500">{hotelInfo.checkOut}</Text>
-        </Text>
-      </View>
-      <View className="p-4 items-center">
-        <Text className="text-lg font-semibold text-blue-600 mb-4 text-center">Serviços Incluídos:</Text>
-        <View className="flex flex-row flex-wrap justify-center">
+    <div className="flex flex-col bg-white">
+      {/* Header */}
+      <div className="p-6 border-b border-gray-300">
+        <h1 className="text-2xl font-bold text-blue-500">{hotelInfo.hotelName}</h1>
+        <p className="text-gray-700">{hotelInfo.address}</p>
+        <p className="text-gray-700 mt-2">
+          Check-in: <span className="text-blue-500">{hotelInfo.checkIn}</span> | Check-out: <span className="text-blue-500">{hotelInfo.checkOut}</span>
+        </p>
+      </div>
+
+      {/* Services */}
+      <div className="p-4">
+        <h2 className="text-lg font-semibold text-blue-600 mb-4 text-center">Serviços Incluídos:</h2>
+        <div className="flex flex-wrap justify-center">
           {hotelInfo.services.map((service, index) => (
-            <View
+            <div
               key={index}
-              className="w-1/2 p-3"
+              className="w-1/2 p-3 flex justify-center"
             >
-              <View className="bg-white aspect-square flex justify-center items-center rounded-md shadow-sm border border-gray-200">
-                <Icon name={service.icon} size={32} color="#3b82f6" />
-                <Text className="text-center text-blue-500 font-medium mt-2">{service.name}</Text>
-              </View>
-            </View>
+              <div className="bg-white aspect-square flex flex-col justify-center items-center rounded-md shadow-sm border border-gray-200 p-4">
+                <FontAwesomeIcon icon={service.icon} size="2x" className="text-blue-500" />
+                <p className="text-center text-blue-500 font-medium mt-2">{service.name}</p>
+              </div>
+            </div>
           ))}
-        </View>
-      </View>
-    </View>
+        </div>
+      </div>
+    </div>
   );
 };
 

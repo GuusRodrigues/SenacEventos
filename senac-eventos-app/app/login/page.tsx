@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { login } from "../services/authService";
+import { getParticipantByEmail } from "../services/participantService";
 import RegisterParticipantScreen from "../components/registerParticipant";
 
 const LoginScreen = () => {
@@ -23,12 +24,21 @@ const LoginScreen = () => {
     setLoading(true);
     setEmailError(false);
     setLoginError(false);
+
     try {
+      // Faz login e salva o token e email no localStorage
       const response = await login(emailToUse);
       localStorage.setItem("token", response.token);
       localStorage.setItem("email", response.email);
+
+      // Busca os dados completos do participante e armazena no localStorage
+      const participant = await getParticipantByEmail(response.email);
+      localStorage.setItem("participant", JSON.stringify(participant));
+
+      // Redireciona para a página inicial
       router.push("/home");
-    } catch {
+    } catch (error) {
+      console.error("Erro no login:", error);
       setLoginError(true);
     } finally {
       setLoading(false);
@@ -37,6 +47,7 @@ const LoginScreen = () => {
 
   const openRegisterModal = () => setIsModalVisible(true);
   const closeRegisterModal = () => setIsModalVisible(false);
+
   const handleRegisterSuccess = (registeredEmail: string) => {
     setIsModalVisible(false);
     handleLogin(registeredEmail);
