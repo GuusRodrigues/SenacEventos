@@ -1,7 +1,10 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  basePath: '/admins',
+  images: {
+    domains: ['missaonrf25.pe.senac.br'], 
+  },
 };
 
 export default nextConfig;

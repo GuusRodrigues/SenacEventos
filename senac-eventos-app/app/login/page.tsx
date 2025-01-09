@@ -26,16 +26,13 @@ const LoginScreen = () => {
     setLoginError(false);
 
     try {
-      // Faz login e salva o token e email no localStorage
       const response = await login(emailToUse);
       localStorage.setItem("token", response.token);
       localStorage.setItem("email", response.email);
 
-      // Busca os dados completos do participante e armazena no localStorage
       const participant = await getParticipantByEmail(response.email);
       localStorage.setItem("participant", JSON.stringify(participant));
 
-      // Redireciona para a página inicial
       router.push("/home");
     } catch (error) {
       console.error("Erro no login:", error);
@@ -58,7 +55,7 @@ const LoginScreen = () => {
       <div className="flex flex-col items-center w-full max-w-md p-4">
         <div className="mb-10">
           <Image
-            src="/images/Marca NRF 4 1.png"
+            src={"https://missaonrf25.pe.senac.br/appevento/uploads/Marca_NRF_4_1.png"}
             alt="Marca"
             width={200}
             height={100}

@@ -8,11 +8,14 @@ import TabNavigator from "../components/tabNavgator";
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState("");
 
+  const imageUrlExemplo = "https://missaonrf25.pe.senac.br/appevento/uploads/exemploInicio.png";
+  const imageUrlMarca = "https://missaonrf25.pe.senac.br/appevento/uploads/marca.png";
+
   return (
     <>
       <div className="w-full bg-blue-500 flex items-center justify-center py-10 sm:py-20">
         <Image
-          src="/images/marca.png"
+          src={imageUrlMarca} // Usando a URL da imagem "marca.png"
           alt="Marca"
           width={150}
           height={150}
@@ -23,7 +26,7 @@ export default function HomeScreen() {
       <div className="w-full flex justify-center">
         <div className="w-full h-[200px] sm:h-[300px] relative">
           <Image
-            src="/images/exemploInicio.png"
+            src={imageUrlExemplo} // Usando a URL da imagem "exemploInicio.png"
             alt="Exemplo Início"
             layout="fill"
             className="object-cover"
