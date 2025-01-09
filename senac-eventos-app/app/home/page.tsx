@@ -1,8 +1,8 @@
 "use client";
 import { useState } from "react";
-import DateScroll from "../components/dateScroll/dateScroll";
 import EventList from "../components/events/EventList";
 import TabNavigator from "../components/tabNavgator";
+import DateScroll from "../components/dateScroll/dateScroll";
 
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState("");
@@ -44,6 +44,6 @@ export default function HomeScreen() {
       </div>
 
       <TabNavigator />
-    </>
+   </>
   );
 }

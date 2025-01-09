@@ -21,6 +21,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const [selectedAreas, setSelectedAreas] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
 
+
   useEffect(() => {
     const loadUserData = async () => {
       if (visible) {
@@ -30,6 +31,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             const userData: Participant = JSON.parse(storedUserData);
             setFormData(userData);
             const areaIds = userData.AreaOfExpertise?.map((area) => area.idArea) || [];
+
             setSelectedAreas(areaIds);
           }
         } finally {
@@ -44,6 +46,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         setAreas(areasData);
       } catch (error) {
         console.error("Erro ao carregar áreas:", error);
+
       }
     };
 

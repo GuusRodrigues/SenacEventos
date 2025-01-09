@@ -6,6 +6,7 @@ import TourismInfoCard from "./TourismInfoCard";
 import HotelInfoCard from "./HotelInfoCard";
 import FlightInfoCard from "./FlightInfoCard";
 
+
 interface TravelGuideModalProps {
   visible: boolean;
   onClose: () => void;
@@ -20,6 +21,7 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
   );
 
   const openSubModal = (modalType: "flight" | "hotel" | "tourism") => {
+
     setCurrentSubModal(modalType);
   };
 
@@ -89,6 +91,7 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
         </div>
       )}
     </div>
+
   );
 };
 

@@ -6,6 +6,7 @@ import { fetchEventById } from "@/app/services/eventService";
 import MyCheckinsCard from "./MyCheckinsCard";
 import { Checkin } from "@/app/interfaces/checkin";
 
+
 interface MyCheckinsModalProps {
   visible: boolean;
   onClose: () => void;
@@ -15,6 +16,7 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
   visible,
   onClose,
 }) => {
+
   const [checkins, setCheckins] = useState<Checkin[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [eventNames, setEventNames] = useState<{ [key: number]: string }>({});
@@ -33,6 +35,7 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
       setCheckins(checkinsData);
     } catch (error) {
       console.error("Erro ao carregar check-ins:", error);
+
     } finally {
       setLoading(false);
     }
@@ -53,6 +56,7 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
           events[checkin.idActivity] = event.title;
         } catch (error) {
           console.error("Erro ao carregar o nome do evento:", error);
+
         }
       }
       setEventNames(events);
@@ -101,6 +105,7 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
         </button>
       </div>
     </div>
+
   );
 };
 

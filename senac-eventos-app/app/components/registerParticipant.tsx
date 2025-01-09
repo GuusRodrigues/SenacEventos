@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import { AreaOfExpertiseDTO } from "../interfaces/areaOfExpertise";
@@ -165,7 +167,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       </div>
       <div className="mb-4">
         <label className="block text-lg font-bold text-blue-900 mb-2">
-        Segmento*
+          Áreas de Especialização*
         </label>
         <MultiSelect
           options={areas.map((area) => ({
@@ -189,7 +191,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
           labelledBy="Selecione as Áreas"
         />
         {errors.selectedAreas && (
-          <p className="text-red-500 text-sm mt-1 ">
+          <p className="text-red-500 text-sm mt-1">
             Selecione pelo menos uma área.
           </p>
         )}

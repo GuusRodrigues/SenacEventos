@@ -48,7 +48,7 @@ export default function EventDetails({
       onCheckin();
       await loadEvents();
     } catch {
-      // Silenciar o erro
+      alert("Erro: Não foi possível realizar o check-in.");
     }
   };
 

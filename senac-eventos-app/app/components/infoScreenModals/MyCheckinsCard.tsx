@@ -1,6 +1,7 @@
 import React from "react";
 import { MdCalendarToday, MdOutlineAccessTime } from "react-icons/md";
 
+
 interface MyCheckinsCardProps {
   eventName: string;
   checkinDateTime: string | Date;
@@ -10,6 +11,7 @@ const MyCheckinsCard: React.FC<MyCheckinsCardProps> = ({
   eventName,
   checkinDateTime,
 }) => {
+
   const date = new Date(checkinDateTime);
 
   if (isNaN(date.getTime())) {
@@ -43,6 +45,7 @@ const MyCheckinsCard: React.FC<MyCheckinsCardProps> = ({
         <p className="text-sm text-gray-600">{formattedTime}</p>
       </div>
     </div>
+
   );
 };
 

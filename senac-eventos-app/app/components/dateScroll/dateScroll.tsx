@@ -1,5 +1,6 @@
 import React, { useRef } from "react";
 
+
 type Date = {
   displayDate: string;
   day: string;
@@ -67,6 +68,7 @@ export default function DateScroll({ selectedDate, setSelectedDate }: DateScroll
           <span
             className={`text-sm font-bold ${
               selectedDate === item.value ? "text-white" : "text-[#6e99df]"
+
             }`}
           >
             {item.displayDate}
