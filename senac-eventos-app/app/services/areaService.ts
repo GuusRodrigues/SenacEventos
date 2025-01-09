@@ -1,4 +1,4 @@
-import { AreaOfExpertiseDTO } from '@/interfaces/areaOfExpertise';
+import { AreaOfExpertiseDTO } from '../interfaces/areaOfExpertise';
 import api, { DEBUG_MODE } from './api';
 
 export const getAllAreas = async (): Promise<AreaOfExpertiseDTO[]> => {
