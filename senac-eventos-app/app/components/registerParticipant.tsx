@@ -167,7 +167,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       </div>
       <div className="mb-4">
         <label className="block text-lg font-bold text-blue-900 mb-2">
-          Áreas de Especialização*
+          Segmento*
         </label>
         <MultiSelect
           options={areas.map((area) => ({
