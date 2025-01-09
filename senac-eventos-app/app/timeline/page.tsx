@@ -1,69 +1,86 @@
-/* eslint-disable @next/next/no-img-element */
 "use client";
-import { useState, useEffect } from "react";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import { fetchPosts } from "@/app/services/postService";
 
-import { Post } from "@/app/interfaces/post"; 
-import TabNavigator from "../components/tabNavgator";
+import React, { useState, useEffect } from "react";
+import { fetchPosts } from "../services/postService";
+import { Post } from "../interfaces/post"; // Importando o tipo Post
+import PostList from "../components/timeline/PostList"; // Importando o componente PostList
+import CreatePostModal from "../components/timeline/CreatePostModal"; // Importando o componente CreatePostModal
+import PostSkeleton from "../components/timeline/PostSkeleton"; // Importando o componente PostSkeleton
+import { HeaderTimeline } from "../components/timeline/HeaderTimeline";
 
-export default function CardTimeline() {
-  const [posts, setPosts] = useState<Post[]>([]);
-  const [likedPosts, setLikedPosts] = useState<{ [key: number]: boolean }>({});
+const TimeLineScreen: React.FC = () => {
+  const [posts, setPosts] = useState<Post[]>([]); // Especificando o tipo de posts
+  const [loading, setLoading] = useState(true);
+  const [canPost, setCanPost] = useState<boolean | null>(null);
+  const [idParticipant, setIdParticipant] = useState<number | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await fetchPosts();
-        setPosts(data);
-      } catch (error) {
-        console.error("Erro ao buscar posts:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
-  const handleLike = (id: number) => {
-    setLikedPosts((prev) => ({ ...prev, [id]: !prev[id] }));
+  const loadPosts = async () => {
+    setLoading(true);
+    try {
+      const fetchedPosts = await fetchPosts();
+      setPosts(fetchedPosts); // Agora o tipo é corretamente Post[]
+    } catch (error) {
+      console.error("Erro ao carregar posts:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
+  const fetchParticipantId = async () => {
+    try {
+      const storedParticipant = localStorage.getItem("participant");
+      if (storedParticipant) {
+        const participant = JSON.parse(storedParticipant);
+        setIdParticipant(participant.idParticipant);
+        setCanPost(participant.postPermission === 1);
+      } else {
+        setCanPost(false);
+      }
+    } catch (error) {
+      console.error("Erro ao buscar participante:", error);
+      setCanPost(false);
+    }
+  };
+
+  useEffect(() => {
+    loadPosts();
+    fetchParticipantId();
+  }, []);
+
+  if (canPost === null || loading) {
+    return <PostSkeleton />;
+  }
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {posts.map((post) => (
-        <main
-          key={post.idPost}
-          className="max-w-sm rounded-lg shadow-md bg-white overflow-hidden"
+    <div className="flex flex-col h-full bg-gray-100">
+      <HeaderTimeline />
+
+      {canPost && (
+        <button
+          onClick={() => setModalVisible(true)}
+          className="self-center bg-black text-white rounded-lg py-2 px-4 mb-4"
         >
-          <img
-            src={post.imageUrl}
-            alt="Imagem do Post"
-            className="w-full h-72 object-cover"
-          />
+          +Adicionar Postagem
+        </button>
+      )}
 
-          <div className="p-4">
-            <h1 className="font-semibold mb-2 text-gray-700">
-              {post.description}
-            </h1>
-            <p className="text-gray-700 mb-4">Autor: {post.participant.name} ( {post.participant.companyName})</p>
+      <PostList
+        posts={posts}
+        setPosts={setPosts} 
+        onRefresh={loadPosts}
+        idParticipant={idParticipant}
+        loading={loading}
+      />
 
-            <div className="flex items-center space-x-2">
-              <button
-                onClick={() => handleLike(post.idPost)}
-                className="focus:outline-none transition-transform transform hover:scale-110"
-              >
-                {likedPosts[post.idPost] ? (
-                  <FavoriteIcon className="text-red-500" />
-                ) : (
-                  <FavoriteBorderIcon className="text-gray-400" />
-                )}
-              </button>
-              <span className="text-gray-700 font-medium">Curtir</span>
-            </div>
-          </div>
-        </main>
-      ))}
-      <TabNavigator/>
+      <CreatePostModal
+        modalVisible={modalVisible}
+        setModalVisible={setModalVisible}
+        setPosts={setPosts} 
+        onPostCreated={loadPosts}
+      />
     </div>
   );
-}
+};
+
+export default TimeLineScreen;

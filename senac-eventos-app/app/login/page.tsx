@@ -2,13 +2,9 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-<<<<<<< HEAD
 import { login } from "../services/authService";
 import { getParticipantByEmail } from "../services/participantService";
-=======
-import Image from "next/image";
-import { login } from "../services/authService";
->>>>>>> newproj
+
 import RegisterParticipantScreen from "../components/registerParticipant";
 
 const LoginScreen = () => {
@@ -28,15 +24,12 @@ const LoginScreen = () => {
     setLoading(true);
     setEmailError(false);
     setLoginError(false);
-<<<<<<< HEAD
 
-=======
->>>>>>> newproj
+
     try {
       const response = await login(emailToUse);
       localStorage.setItem("token", response.token);
       localStorage.setItem("email", response.email);
-<<<<<<< HEAD
 
       const participant = await getParticipantByEmail(response.email);
       localStorage.setItem("participant", JSON.stringify(participant));
@@ -44,10 +37,6 @@ const LoginScreen = () => {
       router.push("/home");
     } catch (error) {
       console.error("Erro no login:", error);
-=======
-      router.push("/home");
-    } catch {
->>>>>>> newproj
       setLoginError(true);
     } finally {
       setLoading(false);
@@ -56,10 +45,9 @@ const LoginScreen = () => {
 
   const openRegisterModal = () => setIsModalVisible(true);
   const closeRegisterModal = () => setIsModalVisible(false);
-<<<<<<< HEAD
+ 
 
-=======
->>>>>>> newproj
+
   const handleRegisterSuccess = (registeredEmail: string) => {
     setIsModalVisible(false);
     handleLogin(registeredEmail);
@@ -69,13 +57,9 @@ const LoginScreen = () => {
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="flex flex-col items-center w-full max-w-md p-4">
         <div className="mb-10">
-<<<<<<< HEAD
           <img
             src="https://missaonrf25.pe.senac.br/appevento/uploads/Marca_NRF_4_1.png"
-=======
-          <Image
-            src="/images/Marca NRF 4 1.png"
->>>>>>> newproj
+
             alt="Marca"
             width={200}
             height={100}
@@ -86,11 +70,8 @@ const LoginScreen = () => {
           <label className="block mb-2 text-gray-700 font-bold">E-mail</label>
           <input
             type="email"
-<<<<<<< HEAD
             className={`w-full px-3 text-gray-600 py-2 border rounded-md focus:outline-none focus:ring-2 ${
-=======
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 ${
->>>>>>> newproj
+
               emailError
                 ? "border-red-500 focus:ring-red-200"
                 : "border-blue-500 focus:ring-blue-200"
