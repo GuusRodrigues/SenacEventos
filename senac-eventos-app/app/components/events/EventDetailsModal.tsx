@@ -25,12 +25,6 @@ export default function EventDetails({
 }: EventDetailsProps) {
   const [hasCheckedInState, setHasCheckedInState] = useState(hasCheckedIn);
 
-  useEffect(() => {
-    if (typeof window !== "undefined" && document.getElementById("__next")) {
-      Modal.setAppElement("#__next");
-    }
-  }, []);
-
   const formattedDate = event.date.split("-").reverse().join("/");
   const formattedTime = event.time.split(":").slice(0, 2).join(":");
 
@@ -67,10 +61,11 @@ export default function EventDetails({
       isOpen={isVisible}
       onRequestClose={onClose}
       contentLabel="Detalhes do Evento"
+      ariaHideApp={false} // Desativa a necessidade de definir appElement
       className="bg-white rounded-lg shadow-lg max-w-5xl w-full mx-auto mt-10 p-8 overflow-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
     >
-      <div className="w-full max-h-[80vh] overflow-y-auto"> {/* A área de conteúdo agora pode rolar */}
+      <div className="w-full max-h-[80vh] overflow-y-auto">
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-gray-800">{event.title}</h2>
         </div>

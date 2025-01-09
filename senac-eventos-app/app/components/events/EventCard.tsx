@@ -1,8 +1,9 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import { FaBookmark, FaRegBookmark, FaCalendarAlt, FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import { Event } from "@/app/interfaces/event";
-import EventDetails from "./EventDetailsModal";
+import EventDetails from "./EventDetailsModal"; // Modal de detalhes do evento
 
 interface EventCardProps {
   event: Event;
@@ -92,16 +93,16 @@ export default function EventCard({
           <p className="ml-2 text-sm text-gray-600">{event.location}</p>
         </div>
       </div>
-      {isModalVisible && (
-        <EventDetails
-          event={event}
-          isVisible={isModalVisible}
-          onClose={() => setModalVisible(false)}
-          onCheckin={handleCheckin}
-          hasCheckedIn={hasCheckedIn}
-          loadEvents={loadEvents}
-        />
-      )}
+
+      {/* Modal de Detalhes do Evento */}
+      <EventDetails
+        event={event}
+        isVisible={isModalVisible}
+        onClose={() => setModalVisible(false)}
+        onCheckin={handleCheckin}
+        hasCheckedIn={hasCheckedIn}
+        loadEvents={loadEvents}
+      />
     </>
   );
 }
