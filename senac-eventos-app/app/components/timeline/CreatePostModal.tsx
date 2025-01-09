@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState } from "react";
@@ -7,6 +9,7 @@ import { createPost } from "@/app/services/postService";
 import { useLocalStorage } from "@/app/hooks/useLocalStorage";
 import { Participant } from "@/app/interfaces/participant";
 import { Post } from "@/app/interfaces/post";
+import CameraModal from "./CameraModal";
 
 const MAX_CHARACTERS = 1000;
 
@@ -19,59 +22,18 @@ const CreatePostModal: React.FC<{
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
   const [participant] = useLocalStorage<Participant | null>("participant", null);
+  const [cameraModalVisible, setCameraModalVisible] = useState(false);
 
   const openImagePicker = async () => {
-    try {
-      const result = await navigator.mediaDevices.getUserMedia({ video: true });
-      const image = await captureImageFromStream(result);
-      setImageFile(image);
-    } catch (error) {
-      console.error("Error opening camera:", error);
-      alert("Permission denied to access the camera.");
-    }
-  };
-
-  const openCamera = async () => {
-    try {
-      const result = await navigator.mediaDevices.getUserMedia({ video: true });
-      const image = await captureImageFromStream(result);
-      setImageFile(image);
-    } catch (error) {
-      console.error("Error opening camera:", error);
-      alert("Permission denied to access the camera.");
-    }
-  };
-
-  const captureImageFromStream = (stream: MediaStream): Promise<File> => {
-    return new Promise((resolve, reject) => {
-      const video = document.createElement("video");
-      video.srcObject = stream;
-      video.play();
-
-      video.onloadedmetadata = () => {
-        const canvas = document.createElement("canvas");
-        canvas.width = video.videoWidth;
-        canvas.height = video.videoHeight;
-        const ctx = canvas.getContext("2d");
-        if (ctx) {
-          ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-          canvas.toBlob((blob) => {
-            if (blob) {
-              const file = new File([blob], "photo.jpg", { type: "image/jpeg" });
-              resolve(file);
-            } else {
-              reject("Failed to capture image from stream.");
-            }
-          });
-        } else {
-          reject("Failed to get canvas context.");
-        }
-      };
-
-      video.onerror = () => {
-        reject("Failed to load video stream.");
-      };
-    });
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = "image/*";
+    input.click();
+    input.onchange = (e) => {
+      const fileInput = e.target as HTMLInputElement;
+      const file = fileInput?.files?.[0];
+      if (file) setImageFile(file);
+    };
   };
 
   const handleCreatePost = async () => {
@@ -79,6 +41,7 @@ const CreatePostModal: React.FC<{
       alert("Please fill in all fields before posting.");
       return;
     }
+
     if (description.length > MAX_CHARACTERS) {
       alert("Description exceeds the 1000 character limit.");
       return;
@@ -95,12 +58,6 @@ const CreatePostModal: React.FC<{
       formData.append("idParticipant", String(participant.idParticipant));
       formData.append("description", description);
 
-      console.log("Dados do post sendo enviados:", {
-        idParticipant: participant.idParticipant,
-        description,
-        imageFile
-      });
-
       const createdPost = await createPost(formData);
       setPosts((prevPosts) => [createdPost, ...prevPosts]);
       setModalVisible(false);
@@ -113,56 +70,71 @@ const CreatePostModal: React.FC<{
   };
 
   return (
-    <Modal isOpen={modalVisible} onRequestClose={() => setModalVisible(false)}>
-      <div className="p-4 flex flex-col">
-        <button onClick={() => setModalVisible(false)} className="mb-4 text-blue-500">
-          Go back
-        </button>
-        <div className="mb-4">
-          <label className="font-bold text-lg">Description</label>
-          <textarea
-            placeholder="Insert description"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            className={`mt-2 p-2 border rounded bg-gray-100 w-full ${
-              description.length > MAX_CHARACTERS ? "border-red-500" : "border-gray-300"
+    <>
+      <Modal isOpen={modalVisible} onRequestClose={() => setModalVisible(false)} ariaHideApp={false}>
+        <div className="p-4 flex flex-col">
+          <div className="mb-4">
+            <label className="font-bold text-gray-800 text-lg">Descrição</label>
+            <textarea
+              placeholder="Escreva uma descrição*"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className={`mt-2 p-2 border text-gray-700 rounded bg-gray-100 w-full ${
+                description.length > MAX_CHARACTERS ? "border-red-500" : "border-gray-300"
+              }`}
+            />
+            <p
+              className={`text-right mt-1 font-medium ${
+                description.length > MAX_CHARACTERS ? "text-red-500" : "text-gray-500"
+              }`}
+            >
+              {MAX_CHARACTERS - description.length}/{MAX_CHARACTERS}
+            </p>
+          </div>
+
+          {imageFile && (
+            <img src={URL.createObjectURL(imageFile)} alt="Selected" className="w-full h-52 mb-4 rounded" />
+          )}
+
+<div className="flex justify-between mb-4">
+  <button
+    onClick={openImagePicker}
+    className="flex flex-col items-center justify-center gap-1 text-blue-500"
+  >
+    <FaImage size={32} />
+    <p className="text-sm font-medium">Galeria</p>
+  </button>
+  <button
+    onClick={() => setCameraModalVisible(true)}
+    className="flex flex-col items-center justify-center gap-1 text-blue-500"
+  >
+    <FaCamera size={32} />
+    <p className="text-sm font-medium">Câmera</p>
+  </button>
+</div>
+
+          <button
+            onClick={handleCreatePost}
+            className={`px-4 py-3 rounded-lg items-center ${
+              description.length > MAX_CHARACTERS ? "bg-gray-400" : "bg-blue-500"
             }`}
-          />
-          <p
-            className={`text-right mt-1 font-medium ${
-              description.length > MAX_CHARACTERS ? "text-red-500" : "text-gray-500"
-            }`}
+            disabled={description.length > MAX_CHARACTERS}
           >
-            {MAX_CHARACTERS - description.length}/{MAX_CHARACTERS}
-          </p>
-        </div>
-
-        {imageFile && (
-          <img src={URL.createObjectURL(imageFile)} alt="Selected" className="w-full h-52 mb-4 rounded" />
-        )}
-
-        <div className="flex justify-between mb-4">
-          <button onClick={openImagePicker} className="items-center">
-            <FaImage size={32} className="text-blue-500" />
-            <p>Gallery</p>
+            <p className="text-white font-bold">Publicar</p>
           </button>
-          <button onClick={openCamera} className="items-center">
-            <FaCamera size={32} className="text-blue-500" />
-            <p>Camera</p>
+
+          <button onClick={() => setModalVisible(false)} className="mt-4 text-blue-500">
+            Cancelar
           </button>
         </div>
+      </Modal>
 
-        <button
-          onClick={handleCreatePost}
-          className={`px-4 py-3 rounded-lg items-center ${
-            description.length > MAX_CHARACTERS ? "bg-gray-400" : "bg-blue-500"
-          }`}
-          disabled={description.length > MAX_CHARACTERS}
-        >
-          <p className="text-white font-bold">Post</p>
-        </button>
-      </div>
-    </Modal>
+      <CameraModal
+        isOpen={cameraModalVisible}
+        onRequestClose={() => setCameraModalVisible(false)}
+        onCapture={(file) => setImageFile(file)}
+      />
+    </>
   );
 };
 
