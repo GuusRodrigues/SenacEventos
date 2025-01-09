@@ -11,7 +11,7 @@ import { Participant } from "@/app/interfaces/participant";
 import { Post } from "@/app/interfaces/post";
 import CameraModal from "./CameraModal";
 
-const MAX_CHARACTERS = 1000;
+const MAX_CHARACTERS = 2000;
 
 const CreatePostModal: React.FC<{
   modalVisible: boolean;
