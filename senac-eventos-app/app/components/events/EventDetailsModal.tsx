@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
@@ -66,10 +67,10 @@ export default function EventDetails({
       isOpen={isVisible}
       onRequestClose={onClose}
       contentLabel="Detalhes do Evento"
-      className="bg-white rounded-lg shadow-lg max-w-5xl w-full mx-auto mt-10 p-8"
+      className="bg-white rounded-lg shadow-lg max-w-5xl w-full mx-auto mt-10 p-8 overflow-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
     >
-      <div>
+      <div className="w-full max-h-[80vh] overflow-y-auto"> {/* A área de conteúdo agora pode rolar */}
         <div className="mb-6">
           <h2 className="text-3xl font-bold text-gray-800">{event.title}</h2>
         </div>
