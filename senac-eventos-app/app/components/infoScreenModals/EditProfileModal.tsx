@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import { AreaOfExpertiseDTO } from "@/app/interfaces/areaOfExpertise";
@@ -6,6 +7,8 @@ import { getAllAreas } from "@/app/services/areaService";
 import { updateParticipant } from "@/app/services/participantService";
 import React, { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
+import useFormatPhone from "@/app/hooks/useFormatPhone";
+import useAlert from "@/app/hooks/useAlert";
 
 interface EditProfileModalProps {
   visible: boolean;
@@ -16,11 +19,20 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   visible,
   onClose,
 }) => {
-  const [formData, setFormData] = useState<Partial<Participant> & { idArea?: number[] }>({});
+  const [formData, setFormData] = useState<
+    Partial<Participant> & { idArea?: number[] }
+  >({});
   const [areas, setAreas] = useState<AreaOfExpertiseDTO[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const { formatPhone } = useFormatPhone();
+  const { showError, showSuccess } = useAlert();
 
+  const handleBlurContact = () => {
+    if ((formData.contact || "").length !== 11) {
+      showError("O contato deve ter exatamente 11 números.");
+    }
+  };
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -30,8 +42,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           if (storedUserData) {
             const userData: Participant = JSON.parse(storedUserData);
             setFormData(userData);
-            const areaIds = userData.AreaOfExpertise?.map((area) => area.idArea) || [];
-
+            const areaIds =
+              userData.AreaOfExpertise?.map((area) => area.idArea) || [];
             setSelectedAreas(areaIds);
           }
         } finally {
@@ -46,7 +58,6 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         setAreas(areasData);
       } catch (error) {
         console.error("Erro ao carregar áreas:", error);
-
       }
     };
 
@@ -62,14 +73,12 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   };
 
   const handleSave = async () => {
-    // Prepara os dados para salvar
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const { AreaOfExpertise, ...updatedData } = formData;
-    updatedData.idArea = selectedAreas;
-
     try {
+      const { AreaOfExpertise, ...updatedData } = formData;
+      updatedData.idArea = selectedAreas;
+
       await updateParticipant(updatedData as Participant);
-      // Atualiza os dados no localStorage
+
       localStorage.setItem(
         "participant",
         JSON.stringify({
@@ -79,9 +88,11 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           ),
         })
       );
+
+      showSuccess("Dados salvos com sucesso.");
       onClose();
     } catch (error) {
-      console.error("Erro ao salvar dados do usuário:", error);
+      showError("Erro ao salvar dados do usuário.");
     }
   };
 
@@ -99,76 +110,97 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
         ) : (
           <>
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">Nome</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Nome
+              </label>
               <input
                 type="text"
-                className="w-full border border-gray-300 p-2 rounded"
+                className="w-full border text-gray-700 border-gray-300 p-2 rounded"
                 value={formData.name || ""}
                 onChange={(e) => handleInputChange("name", e.target.value)}
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">Cargo</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Cargo
+              </label>
               <input
                 type="text"
-                className="w-full border border-gray-300 p-2 rounded"
+                className="w-full border text-gray-700 border-gray-300 p-2 rounded"
                 value={formData.position || ""}
                 onChange={(e) => handleInputChange("position", e.target.value)}
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">Contato</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Contato
+              </label>
               <input
                 type="text"
-                className="w-full border border-gray-300 p-2 rounded"
-                value={formData.contact || ""}
-                onChange={(e) => handleInputChange("contact", e.target.value)}
+                className="w-full border text-gray-700 border-gray-300 p-2 rounded"
+                maxLength={15}
+                value={formatPhone(formData.contact || "")}
+                onChange={(e) => {
+                  const input = e.target.value.replace(/\D/g, "");
+                  if (input.length <= 11) {
+                    handleInputChange("contact", input);
+                  }
+                }}
+                onBlur={handleBlurContact}
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">Empresa</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Empresa
+              </label>
               <input
                 type="text"
-                className="w-full border border-gray-300 p-2 rounded"
+                className="w-full border text-gray-700 border-gray-300 p-2 rounded"
                 value={formData.companyName || ""}
-                onChange={(e) => handleInputChange("companyName", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("companyName", e.target.value)
+                }
               />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">Segmento</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                Segmento
+              </label>
               <MultiSelect
-  options={areas.map((area) => ({
-    label: area.name,
-    value: area.idArea,
-  }))}
-  value={selectedAreas
-    .map((id) => {
-      const area = areas.find((area) => area.idArea === id);
-      return area
-        ? { label: area.name, value: area.idArea }
-        : undefined;
-    })
-    .filter(
-      (area): area is { label: string; value: number } =>
-        area !== undefined
-    )}
-  onChange={(selected: { label: string; value: number }[]) =>
-    setSelectedAreas(selected.map((option) => option.value))
-  }
-  labelledBy="Selecione as Áreas"
-  className="text-gray-800"
-  overrideStrings={{
-    allItemsAreSelected: "Todos os itens selecionados",
-    clearSearch: "Limpar busca",
-    noOptions: "Nenhuma opção disponível",
-    search: "Pesquisar",
-    selectAll: "Selecionar Todos",
-    selectSomeItems: "Selecione...",
-  }}
-/>
+                options={areas.map((area) => ({
+                  label: area.name,
+                  value: area.idArea,
+                }))}
+                value={selectedAreas
+                  .map((id) => {
+                    const area = areas.find((area) => area.idArea === id);
+                    return area
+                      ? { label: area.name, value: area.idArea }
+                      : undefined;
+                  })
+                  .filter(
+                    (area): area is { label: string; value: number } =>
+                      area !== undefined
+                  )}
+                onChange={(selected: { label: string; value: number }[]) =>
+                  setSelectedAreas(selected.map((option) => option.value))
+                }
+                labelledBy="Selecione as Áreas"
+                className="text-gray-800"
+                overrideStrings={{
+                  allItemsAreSelected: "Todos os itens selecionados",
+                  clearSearch: "Limpar busca",
+                  noOptions: "Nenhuma opção disponível",
+                  search: "Pesquisar",
+                  selectAll: "Selecionar Todos",
+                  selectSomeItems: "Selecione...",
+                }}
+              />
             </div>
             <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">E-mail</label>
+              <label className="block text-sm font-bold text-gray-700 mb-1">
+                E-mail
+              </label>
               <input
                 type="text"
                 className="w-full border border-gray-300 p-2 rounded bg-gray-100 text-gray-500"

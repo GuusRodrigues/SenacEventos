@@ -5,6 +5,7 @@ import Modal from "react-modal";
 import { FaCalendarAlt, FaClock } from "react-icons/fa";
 import { Event } from "@/app/interfaces/event";
 import { createCheckin } from "@/app/services/checkinService";
+import useAlert from "@/app/hooks/useAlert";
 
 interface EventDetailsProps {
   event: Event;
@@ -24,6 +25,7 @@ export default function EventDetails({
   loadEvents,
 }: EventDetailsProps) {
   const [hasCheckedInState, setHasCheckedInState] = useState(hasCheckedIn);
+  const { showError, showSuccess } = useAlert();
 
   const formattedDate = event.date.split("-").reverse().join("/");
   const formattedTime = event.time.split(":").slice(0, 2).join(":");
@@ -32,7 +34,7 @@ export default function EventDetails({
     try {
       const storedParticipant = localStorage.getItem("participant");
       if (!storedParticipant) {
-        alert("Usuário não encontrado. Faça login novamente.");
+        showError("Usuário não encontrado. Faça login novamente.");
         return;
       }
 
@@ -43,12 +45,12 @@ export default function EventDetails({
       };
 
       await createCheckin(checkinData);
-      alert("Check-in realizado com sucesso!");
+      showSuccess("Check-in realizado com sucesso!");
       setHasCheckedInState(true);
       onCheckin();
       await loadEvents();
     } catch {
-      alert("Erro: Não foi possível realizar o check-in.");
+      showError("Erro: Não foi possível realizar o check-in.");
     }
   };
 
@@ -61,7 +63,7 @@ export default function EventDetails({
       isOpen={isVisible}
       onRequestClose={onClose}
       contentLabel="Detalhes do Evento"
-      ariaHideApp={false} // Desativa a necessidade de definir appElement
+      ariaHideApp={false}
       className="bg-white rounded-lg shadow-lg max-w-5xl w-full mx-auto mt-10 p-8 overflow-auto"
       overlayClassName="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
     >
