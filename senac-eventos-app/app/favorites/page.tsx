@@ -1,15 +1,19 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
 import { fetchFavoriteEvents, deleteFavoriteEvent } from "@/app/services/favoriteService";
+import { fetchEvents } from "@/app/services/eventService";
 import FavoriteEventCard from "@/app/components/events/FavoriteEventCard";
 import { useFavorites } from "@/app/context/FavoritesContext";
 import EventSkeleton from "@/app/components/events/EventSkeleton";
 import { FaFrown } from "react-icons/fa";
 import { SaveActivity } from "../interfaces/savedEvents";
 import TabNavigator from "../components/tabNavgator";
+import { Event } from "../interfaces/event";
 
 export default function FavoriteEventsScreen() {
   const [favorites, setFavorites] = useState<SaveActivity[]>([]);
+  const [allEvents, setAllEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { setFavorites: updateContextFavorites, toggleRefreshFavorites, refreshFavorites } = useFavorites();
 
@@ -19,9 +23,8 @@ export default function FavoriteEventsScreen() {
         const storedParticipant = localStorage.getItem("participant");
         if (storedParticipant) {
           const participant = JSON.parse(storedParticipant);
-
           if (participant.idParticipant) {
-            await loadFavorites(participant.idParticipant);
+            await Promise.all([loadFavorites(participant.idParticipant), loadAllEvents()]);
           }
         } else {
           console.warn("Usuário não autenticado. Por favor, faça login novamente.");
@@ -32,7 +35,6 @@ export default function FavoriteEventsScreen() {
     };
 
     initialize();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refreshFavorites]);
 
   const loadFavorites = async (participantId: number) => {
@@ -46,6 +48,25 @@ export default function FavoriteEventsScreen() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const loadAllEvents = async () => {
+    try {
+      const events = await fetchEvents();
+      setAllEvents(events);
+    } catch (error) {
+      console.error("Erro ao buscar eventos:", error);
+    }
+  };
+
+  const checkIfParticipantCheckedIn = (activityId: number, participantId: number): boolean => {
+    const event = allEvents.find((e) => e.idActivity === activityId);
+    if (event?.checkins) {
+      return event.checkins.some(
+        (checkin) => checkin.participant?.idParticipant === participantId
+      );
+    }
+    return false;
   };
 
   const handleRemoveFavorite = async (favorite: SaveActivity) => {
@@ -64,7 +85,6 @@ export default function FavoriteEventsScreen() {
 
   const toggleFavorite = (favorite: SaveActivity) => {
     const isCurrentlyFavorited = favorites.some((fav) => fav.idSaveActivity === favorite.idSaveActivity);
-
     if (isCurrentlyFavorited) {
       handleRemoveFavorite(favorite);
     }
@@ -88,18 +108,27 @@ export default function FavoriteEventsScreen() {
         renderEmptyState()
       ) : (
         <div className="space-y-4">
-          {favorites.map((favorite) => (
-            <FavoriteEventCard
-              key={favorite.idSaveActivity}
-              favorite={favorite}
-              onRemoveFavorite={handleRemoveFavorite}
-              isFavorited={true}
-              onToggleFavorite={() => toggleFavorite(favorite)}
-            />
-          ))}
+          {favorites.map((favorite) => {
+            const storedParticipant = localStorage.getItem("participant");
+            const participant = storedParticipant ? JSON.parse(storedParticipant) : null;
+            const hasCheckedIn = participant
+              ? checkIfParticipantCheckedIn(favorite.activity.idActivity, participant.idParticipant)
+              : false;
+
+            return (
+              <FavoriteEventCard
+                key={favorite.idSaveActivity}
+                favorite={favorite}
+                onRemoveFavorite={handleRemoveFavorite}
+                isFavorited={true}
+                onToggleFavorite={() => toggleFavorite(favorite)}
+                hasCheckedIn={hasCheckedIn}
+              />
+            );
+          })}
         </div>
       )}
-    <TabNavigator />
+      <TabNavigator />
     </div>
   );
 }

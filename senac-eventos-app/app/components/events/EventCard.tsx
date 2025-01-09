@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { FaBookmark, FaRegBookmark, FaCalendarAlt, FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import { Event } from "@/app/interfaces/event";
-import EventDetails from "./EventDetailsModal"; // Modal de detalhes do evento
+import EventDetails from "./EventDetailsModal"; 
 
 interface EventCardProps {
   event: Event;
@@ -103,20 +103,7 @@ export default function EventCard({
           <FaMapMarkerAlt size={20} color="#666" />
           <p className="ml-2 text-sm text-gray-600">{event.location}</p>
         </div>
-        {event.speaker && event.speaker.length > 0 && (
-          <>
-            <h4 className="text-base font-semibold text-gray-800 mb-2">Palestrantes</h4>
-            {event.speaker.map((speaker) => (
-              <div key={speaker.idSpeaker} className="mb-2">
-                <p className="text-sm text-gray-800 font-bold">{speaker.name}</p>
-                <p className="text-sm text-gray-600">{speaker.description}</p>
-                <p className="text-sm text-gray-500">
-                  {speaker.role} - {speaker.company}
-                </p>
-              </div>
-            ))}
-          </>
-        )}
+      
       </div>
 
       {isModalVisible && (
