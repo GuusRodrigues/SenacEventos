@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
@@ -16,8 +17,6 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
   const [liked, setLiked] = useState<boolean>(!!likedByUser);
   const [idParticipant, setIdParticipant] = useState<number | null>(null);
   const [expanded, setExpanded] = useState<boolean>(false);
-
-  const MAX_DESCRIPTION_LENGTH = 100;
 
   useEffect(() => {
     const fetchParticipantId = async () => {
@@ -67,20 +66,31 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
   };
 
   return (
-    <div className="mb-5 bg-white rounded-lg shadow-md overflow-hidden">
+    <div className="mb-5 bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300">
       {post.imageUrl && (
-        <img src={post.imageUrl} className="w-full h-[300px]" alt="Post Image" />
+        <img src={post.imageUrl} className="w-full h-[300px] object-cover" alt="Post Image" />
       )}
       <div className="p-4 relative">
-        <p className="text-gray-800 font-bold text-lg mb-2">
-          {expanded || post.description.length <= MAX_DESCRIPTION_LENGTH
-            ? post.description
-            : `${post.description.slice(0, MAX_DESCRIPTION_LENGTH)}...`}
-        </p>
-        {post.description.length > MAX_DESCRIPTION_LENGTH && (
+        <div
+          className={`overflow-hidden transition-max-height duration-300 ease-in-out ${
+            expanded ? "max-h-[1000px]" : "max-h-[80px]"
+          }`}
+        >
+          <p
+            className="text-gray-800 font-bold text-lg mb-2"
+            style={{
+              wordWrap: "break-word",
+              wordBreak: "break-word",
+              whiteSpace: "pre-wrap",
+            }}
+          >
+            {post.description}
+          </p>
+        </div>
+        {post.description.length > 100 && (
           <button
             onClick={() => setExpanded(!expanded)}
-            className="text-blue-500 font-medium"
+            className="text-blue-500 font-medium mt-2"
           >
             {expanded ? "Ver menos" : "Ver mais"}
           </button>
