@@ -7,6 +7,7 @@ import PostList from "../components/timeline/PostList"; // Importando o componen
 import CreatePostModal from "../components/timeline/CreatePostModal"; // Importando o componente CreatePostModal
 import PostSkeleton from "../components/timeline/PostSkeleton"; // Importando o componente PostSkeleton
 import { HeaderTimeline } from "../components/timeline/HeaderTimeline";
+import TabNavigator from "../components/tabNavgator";
 
 const TimeLineScreen: React.FC = () => {
   const [posts, setPosts] = useState<Post[]>([]); // Especificando o tipo de posts
@@ -79,6 +80,7 @@ const TimeLineScreen: React.FC = () => {
         setPosts={setPosts} 
         onPostCreated={loadPosts}
       />
+      <TabNavigator />
     </div>
   );
 };

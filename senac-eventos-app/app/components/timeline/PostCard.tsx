@@ -77,7 +77,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
           }`}
         >
           <p
-            className="text-gray-800 font-bold text-lg mb-2"
+            className="text-gray-800  text-lg mb-2"
             style={{
               wordWrap: "break-word",
               wordBreak: "break-word",

@@ -47,6 +47,7 @@ const PostList: React.FC<PostListProps> = ({ posts, onRefresh, idParticipant, lo
         </button>
       </div>
     </div>
+    
   );
 };
 
