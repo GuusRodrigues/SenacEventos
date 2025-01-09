@@ -5,6 +5,7 @@ import { fetchCheckinsByParticipant } from "@/app/services/checkinService";
 import { fetchEventById } from "@/app/services/eventService";
 import MyCheckinsCard from "./MyCheckinsCard";
 import { Checkin } from "@/app/interfaces/checkin";
+import { FaRegSadTear } from "react-icons/fa";
 
 interface MyCheckinsModalProps {
   visible: boolean;
@@ -38,6 +39,28 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
     }
   };
 
+  const loadEventNames = async () => {
+    try {
+      const events = await Promise.all(
+        checkins.map(async (checkin) => {
+          try {
+            const event = await fetchEventById(checkin.idActivity);
+            return { id: checkin.idActivity, title: event.title };
+          } catch {
+            return { id: checkin.idActivity, title: "Evento não encontrado" };
+          }
+        })
+      );
+      const eventsMap = events.reduce((acc, event) => {
+        acc[event.id] = event.title;
+        return acc;
+      }, {} as { [key: number]: string });
+      setEventNames(eventsMap);
+    } catch (error) {
+      console.error("Erro ao carregar os nomes dos eventos:", error);
+    }
+  };
+
   useEffect(() => {
     if (visible) {
       loadCheckins();
@@ -45,23 +68,20 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
   }, [visible]);
 
   useEffect(() => {
-    const loadEventNames = async () => {
-      const events: { [key: number]: string } = {};
-      for (const checkin of checkins) {
-        try {
-          const event = await fetchEventById(checkin.idActivity);
-          events[checkin.idActivity] = event.title;
-        } catch (error) {
-          console.error("Erro ao carregar o nome do evento:", error);
-        }
-      }
-      setEventNames(events);
-    };
-
     if (checkins.length > 0) {
       loadEventNames();
     }
   }, [checkins]);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape" && visible) {
+        onClose();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [visible, onClose]);
 
   if (!visible) return null;
 
@@ -87,9 +107,12 @@ const MyCheckinsModal: React.FC<MyCheckinsModalProps> = ({
                 />
               ))
             ) : (
-              <p className="text-center text-lg text-gray-600">
-                Você não tem check-ins registrados.
-              </p>
+              <div className="flex flex-col items-center justify-center h-64">
+                <FaRegSadTear size={40} className="text-gray-500 mb-4" />
+                <p className="text-lg text-gray-700">
+                  Você não tem check-ins registrados.
+                </p>
+              </div>
             )}
           </div>
         )}

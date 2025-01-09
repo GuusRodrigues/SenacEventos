@@ -5,6 +5,7 @@ import { getAllParticipants } from "@/app/services/participantService";
 import { Participant } from "@/app/interfaces/participant";
 import useFormatPhone from "@/app/hooks/useFormatPhone";
 
+
 interface ParticipantsModalProps {
   visible: boolean;
   onClose: () => void;
@@ -17,6 +18,7 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { formatPhone } = useFormatPhone();
+
 
   useEffect(() => {
     if (visible) {
@@ -31,6 +33,7 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
       setParticipants(data);
     } catch (error) {
       console.error("Erro ao carregar participantes:", error);
+
     } finally {
       setLoading(false);
     }

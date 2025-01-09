@@ -10,6 +10,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 const HotelInfoCard = () => {
+
   const hotelInfo = {
     hotelName: "Millennium Hotel Broadway Times Square",
     address: "145 W 44th St, New York, NY 10036, United States",
@@ -22,6 +23,7 @@ const HotelInfoCard = () => {
       { name: "Programa Infantil 'Ask Alfred'", icon: faChild },
       { name: "Wi-Fi Cortesia", icon: faWifi },
       { name: "Instalações para Reuniões e Eventos", icon: faBuilding },
+
     ],
   };
 

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { login } from "../services/authService";
 import { getParticipantByEmail } from "../services/participantService";
+
 import RegisterParticipantScreen from "../components/registerParticipant";
 
 const LoginScreen = () => {
@@ -24,6 +25,7 @@ const LoginScreen = () => {
     setEmailError(false);
     setLoginError(false);
 
+
     try {
       const response = await login(emailToUse);
       localStorage.setItem("token", response.token);
@@ -43,6 +45,8 @@ const LoginScreen = () => {
 
   const openRegisterModal = () => setIsModalVisible(true);
   const closeRegisterModal = () => setIsModalVisible(false);
+ 
+
 
   const handleRegisterSuccess = (registeredEmail: string) => {
     setIsModalVisible(false);
@@ -55,6 +59,7 @@ const LoginScreen = () => {
         <div className="mb-10">
           <img
             src="https://missaonrf25.pe.senac.br/appevento/uploads/Marca_NRF_4_1.png"
+
             alt="Marca"
             width={200}
             height={100}
@@ -66,6 +71,7 @@ const LoginScreen = () => {
           <input
             type="email"
             className={`w-full px-3 text-gray-600 py-2 border rounded-md focus:outline-none focus:ring-2 ${
+
               emailError
                 ? "border-red-500 focus:ring-red-200"
                 : "border-blue-500 focus:ring-blue-200"

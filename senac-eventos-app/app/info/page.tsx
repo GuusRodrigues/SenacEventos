@@ -108,7 +108,7 @@ const InfoScreen: React.FC = () => {
           onClick={() => setModalParticipantsVisible(true)}
           className="flex items-center justify-between w-full py-2 border-b border-gray-200"
         >
-          <div className="flex `items-center">
+          <div className="flex items-center">
             <FaUsers size={20} className="text-blue-500" />
             <span className="ml-2 text-black">Participantes</span>
           </div>

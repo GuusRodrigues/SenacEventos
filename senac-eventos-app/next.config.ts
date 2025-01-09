@@ -5,6 +5,7 @@ const nextConfig: NextConfig = {
   images: {
     domains: ['missaonrf25.pe.senac.br'], 
   },
+
 };
 
 export default nextConfig;

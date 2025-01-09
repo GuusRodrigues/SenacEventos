@@ -15,4 +15,5 @@ export default function Root() {
   }, [router]);
 
   return null; 
+
 }

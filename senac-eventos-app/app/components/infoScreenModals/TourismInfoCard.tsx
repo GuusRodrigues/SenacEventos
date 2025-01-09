@@ -17,6 +17,7 @@ const TourismInfoCard: React.FC = () => {
         "Medidas: Temperaturas em Fahrenheit (ºF), distâncias em milhas (mi)",
         "Transporte: Passe de transporte ilimitado (7 dias ou 30 dias), use metrô para evitar congestionamentos",
         "O que vestir: Casacos grossos, roupas térmicas, botas para neve, cachecol, luvas e gorros",
+
         "Leve roupas confortáveis e adequadas ao inverno em Nova York",
         "Tenha sempre uma garrafa de água e lanches leves",
         "Mantenha os documentos necessários sempre à mão",
@@ -45,6 +46,7 @@ const TourismInfoCard: React.FC = () => {
         "O trânsito em NY pode ser congestionado, então sempre saia com antecedência",
       ],
       icon: <FaPlane size={28} className="text-blue-500 mr-4" />,
+
     },
   ];
 
@@ -74,6 +76,7 @@ const TourismInfoCard: React.FC = () => {
         </a>
       </div>
     </div>
+
   );
 };
 
