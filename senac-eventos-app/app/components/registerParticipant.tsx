@@ -170,26 +170,35 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
           Segmento*
         </label>
         <MultiSelect
-          options={areas.map((area) => ({
-            label: area.name,
-            value: area.idArea,
-          }))}
-          value={selectedAreas
-            .map((id) => {
-              const area = areas.find((area) => area.idArea === id);
-              return area
-                ? { label: area.name, value: area.idArea }
-                : undefined;
-            })
-            .filter(
-              (area): area is { label: string; value: number } =>
-                area !== undefined
-            )}
-          onChange={(selected: { label: string; value: number }[]) =>
-            setSelectedAreas(selected.map((option) => option.value))
-          }
-          labelledBy="Selecione as Áreas"
-        />
+  options={areas.map((area) => ({
+    label: area.name,
+    value: area.idArea,
+  }))}
+  value={selectedAreas
+    .map((id) => {
+      const area = areas.find((area) => area.idArea === id);
+      return area
+        ? { label: area.name, value: area.idArea }
+        : undefined;
+    })
+    .filter(
+      (area): area is { label: string; value: number } =>
+        area !== undefined
+    )}
+  onChange={(selected: { label: string; value: number }[]) =>
+    setSelectedAreas(selected.map((option) => option.value))
+  }
+  labelledBy="Selecione as Áreas"
+  className="text-gray-800"
+  overrideStrings={{
+    allItemsAreSelected: "Todos os itens selecionados",
+    clearSearch: "Limpar busca",
+    noOptions: "Nenhuma opção disponível",
+    search: "Pesquisar",
+    selectAll: "Selecionar Todos",
+    selectSomeItems: "Selecione...",
+  }}
+/>
         {errors.selectedAreas && (
           <p className="text-red-500 text-sm mt-1">
             Selecione pelo menos uma área.
