@@ -1,6 +1,5 @@
 "use client";
 import { useState } from "react";
-import Image from "next/image";
 import DateScroll from "../components/dateScroll/dateScroll";
 import EventList from "../components/events/EventList";
 import TabNavigator from "../components/tabNavgator";
@@ -14,22 +13,21 @@ export default function HomeScreen() {
   return (
     <>
       <div className="w-full bg-blue-500 flex items-center justify-center py-10 sm:py-20">
-        <Image
-          src={imageUrlMarca} // Usando a URL da imagem "marca.png"
+        <img
+          src={imageUrlMarca}
           alt="Marca"
-          width={150}
-          height={150}
-          className="sm:w-[200px] sm:h-[200px] object-cover"
+          width={200}
+          height={200}
+          className="object-contain"
         />
       </div>
 
       <div className="w-full flex justify-center">
-        <div className="w-full h-[200px] sm:h-[300px] relative">
-          <Image
+        <div className="w-full sm:w-[300px] h-[200px] sm:h-[300px] relative">
+          <img
             src={imageUrlExemplo} // Usando a URL da imagem "exemploInicio.png"
             alt="Exemplo Início"
-            layout="fill"
-            className="object-cover"
+            className="object-cover w-full h-full"
           />
         </div>
       </div>

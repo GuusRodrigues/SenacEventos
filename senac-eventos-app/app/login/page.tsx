@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Image from "next/image";
 import { login } from "../services/authService";
 import { getParticipantByEmail } from "../services/participantService";
 import RegisterParticipantScreen from "../components/registerParticipant";
@@ -54,8 +53,8 @@ const LoginScreen = () => {
     <div className="flex items-center justify-center min-h-screen bg-white">
       <div className="flex flex-col items-center w-full max-w-md p-4">
         <div className="mb-10">
-          <Image
-            src={"https://missaonrf25.pe.senac.br/appevento/uploads/Marca_NRF_4_1.png"}
+          <img
+            src="https://missaonrf25.pe.senac.br/appevento/uploads/Marca_NRF_4_1.png"
             alt="Marca"
             width={200}
             height={100}
