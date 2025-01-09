@@ -62,8 +62,22 @@ const CameraModal: React.FC<{
       isOpen={isOpen}
       onRequestClose={onRequestClose}
       ariaHideApp={false}
-      className="flex items-center justify-center h-full w-full"
-      overlayClassName="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center"
+      style={{
+        overlay: {
+          backgroundColor: "rgba(0, 0, 0, 0.75)",
+          zIndex: 100, 
+        },
+        content: {
+          position: "fixed",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          padding: 0,
+          border: "none",
+          background: "transparent",
+        },
+      }}
     >
       <div className="relative w-full h-full">
         <button
