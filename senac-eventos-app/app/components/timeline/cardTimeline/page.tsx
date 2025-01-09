@@ -3,8 +3,10 @@ import FavoriteIcon from "@mui/icons-material/Favorite";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import { fetchPosts } from "@/app/services/postService";
 
+import { Post } from "@/app/interfaces/post"; 
+
 export default function CardTimeline() {
-  const [posts, setPosts] = useState([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [likedPosts, setLikedPosts] = useState<{ [key: number]: boolean }>({});
 
   useEffect(() => {
