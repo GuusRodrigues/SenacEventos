@@ -26,11 +26,9 @@ const useFormatPhone = () => {
     const previousCleaned = previousValue.replace(/\D/g, "");
 
     if (currentCleaned.length < previousCleaned.length) {
-      // O usuário está apagando algo, remove apenas o último dígito corretamente
       return currentCleaned;
     }
 
-    // Aplica a formatação ao novo valor
     return formatPhone(currentValue);
   }, [formatPhone]);
 

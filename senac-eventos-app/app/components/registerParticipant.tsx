@@ -1,12 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { MultiSelect } from "react-multi-select-component";
+import { MultiSelect, Option } from "react-multi-select-component";
 import { AreaOfExpertiseDTO } from "../interfaces/areaOfExpertise";
 import { CreateParticipant } from "../interfaces/participant";
 import { createParticipant } from "../services/participantService";
 import { getAllAreas } from "../services/areaService";
 import useFormatPhone from "../hooks/useFormatPhone";
+import CountrySelect from "../components/CountrySelect";
 
 interface RegisterParticipantScreenProps {
   onClose: () => void;
@@ -21,7 +22,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
   const [contact, setContact] = useState("");
-  const [countryCode, setCountryCode] = useState("+55"); // Código do país inicial
+  const [countryCode, setCountryCode] = useState("+55");
   const [companyName, setCompanyName] = useState("");
   const [areas, setAreas] = useState<AreaOfExpertiseDTO[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<number[]>([]);
@@ -38,8 +39,6 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
     try {
       const data = await getAllAreas();
       setAreas(data);
-    } catch (error) {
-      console.error(error);
     } finally {
       setAreasLoading(false);
     }
@@ -67,12 +66,11 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
     if (Object.keys(newErrors).length > 0) return;
 
     const sanitizedContact = contact.replace(/[^0-9]/g, "");
-
     const participantData: CreateParticipant = {
       name,
       email,
       position,
-      contact: `${countryCode} ${sanitizedContact}`, // Inclui o código do país
+      contact: `${countryCode} ${sanitizedContact}`,
       companyName: companyName || undefined,
       idArea: selectedAreas,
       postPermission: 0,
@@ -83,8 +81,6 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       await createParticipant(participantData);
       onRegisterSuccess(email);
       handleClose();
-    } catch (error) {
-      console.error(error);
     } finally {
       setLoading(false);
     }
@@ -102,7 +98,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
   }
 
   return (
-    <div className="bg-gray-100 p-4 mt-4">
+    <div className="bg-gray-100 p-4 mt-4 h-screen overflow-y-auto">
       <h1 className="text-2xl font-bold text-blue-900 text-center mb-4">
         Cadastro de Participante
       </h1>
@@ -147,17 +143,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
         )}
       </div>
       <div className="mb-4 flex gap-2">
-        <select
-          className="p-3 border rounded-lg text-gray-600 border-blue-300"
-          value={countryCode}
-          onChange={(e) => setCountryCode(e.target.value)}
-        >
-          <option value="+55">+55 (Brasil)</option>
-          <option value="+1">+1 (EUA)</option>
-          <option value="+44">+44 (Reino Unido)</option>
-          <option value="+91">+91 (Índia)</option>
-          <option value="+81">+81 (Japão)</option>
-        </select>
+        <CountrySelect value={countryCode} onChange={setCountryCode} />
         <input
           className={`flex-grow p-3 rounded-lg border text-gray-600 ${
             errors.contact ? "border-red-500" : "border-blue-300"
@@ -179,7 +165,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
           onChange={(e) => setCompanyName(e.target.value)}
         />
       </div>
-      <div className="mb-4">
+      <div className="mb-8">
         <label className="block text-lg font-bold text-blue-900 mb-2">
           Segmento*
         </label>
@@ -191,16 +177,11 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
           value={selectedAreas
             .map((id) => {
               const area = areas.find((area) => area.idArea === id);
-              return area
-                ? { label: area.name, value: area.idArea }
-                : undefined;
+              return area ? { label: area.name, value: area.idArea } : undefined;
             })
-            .filter(
-              (area): area is { label: string; value: number } =>
-                area !== undefined
-            )}
-          onChange={(selected: { label: string; value: number }[]) =>
-            setSelectedAreas(selected.map((option) => option.value))
+            .filter((area): area is Option => area !== undefined)}
+          onChange={(selected: Option[]) =>
+            setSelectedAreas(selected.map((option) => option.value as number))
           }
           labelledBy="Selecione as Áreas"
           className="text-gray-800"
@@ -220,7 +201,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
         )}
       </div>
       <button
-        className="w-full bg-blue-700 text-white p-3 rounded-lg mb-4"
+        className="w-full bg-blue-700 mt-32 text-white p-3 rounded-lg mb-4"
         onClick={handleSubmit}
         disabled={loading}
       >

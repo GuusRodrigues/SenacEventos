@@ -9,6 +9,7 @@ import React, { useEffect, useState } from "react";
 import { MultiSelect } from "react-multi-select-component";
 import useFormatPhone from "@/app/hooks/useFormatPhone";
 import useAlert from "@/app/hooks/useAlert";
+import CountrySelect from "@/app/components/CountrySelect";
 
 interface EditProfileModalProps {
   visible: boolean;
@@ -24,13 +25,27 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   >({});
   const [areas, setAreas] = useState<AreaOfExpertiseDTO[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<number[]>([]);
+  const [countryCode, setCountryCode] = useState("+55");
+  const [contact, setContact] = useState("");
   const [loading, setLoading] = useState(true);
-  const { formatPhone } = useFormatPhone();
   const { showError, showSuccess } = useAlert();
 
   const handleBlurContact = () => {
-    if ((formData.contact || "").length !== 11) {
-      showError("O contato deve ter exatamente 11 números.");
+    if (contact.replace(/\D/g, "").length !== 10 && contact.replace(/\D/g, "").length !== 11) {
+      showError("O contato deve ter 10 ou 11 números.");
+    }
+  };
+
+  const applyMask = (value: string): string => {
+    const cleaned = value.replace(/\D/g, "");
+    if (cleaned.length > 10) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+    } else if (cleaned.length > 6) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 6)}-${cleaned.slice(6)}`;
+    } else if (cleaned.length > 2) {
+      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2)}`;
+    } else {
+      return `(${cleaned}`;
     }
   };
 
@@ -42,6 +57,9 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
           if (storedUserData) {
             const userData: Participant = JSON.parse(storedUserData);
             setFormData(userData);
+            const [code, number] = userData.contact?.split(" ") || ["+55", ""];
+            setCountryCode(code);
+            setContact(applyMask(number));
             const areaIds =
               userData.AreaOfExpertise?.map((area) => area.idArea) || [];
             setSelectedAreas(areaIds);
@@ -75,8 +93,8 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
   const handleSave = async () => {
     try {
       const { AreaOfExpertise, ...updatedData } = formData;
+      updatedData.contact = `${countryCode} ${contact.replace(/\D/g, "")}`;
       updatedData.idArea = selectedAreas;
-
       await updateParticipant(updatedData as Participant);
 
       localStorage.setItem(
@@ -100,7 +118,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-lg">
+      <div className="bg-white rounded-lg p-6 w-full max-w-lg h-screen overflow-y-auto">
         <h2 className="text-lg font-bold text-gray-800 mb-4">Editar Perfil</h2>
         {loading ? (
           <div className="flex items-center justify-center">
@@ -131,21 +149,14 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 onChange={(e) => handleInputChange("position", e.target.value)}
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-sm font-bold text-gray-700 mb-1">
-                Contato
-              </label>
+            <div className="mb-4 flex gap-2">
+              <CountrySelect value={countryCode} onChange={setCountryCode} />
               <input
                 type="text"
-                className="w-full border text-gray-700 border-gray-300 p-2 rounded"
+                className="flex-grow border text-gray-700 border-gray-300 p-2 rounded"
+                value={contact}
+                onChange={(e) => setContact(applyMask(e.target.value))}
                 maxLength={15}
-                value={formatPhone(formData.contact || "")}
-                onChange={(e) => {
-                  const input = e.target.value.replace(/\D/g, "");
-                  if (input.length <= 11) {
-                    handleInputChange("contact", input);
-                  }
-                }}
                 onBlur={handleBlurContact}
               />
             </div>
@@ -162,7 +173,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 }
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-8">
               <label className="block text-sm font-bold text-gray-700 mb-1">
                 Segmento
               </label>
@@ -197,7 +208,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
                 }}
               />
             </div>
-            <div className="mb-4">
+            <div className="mb-8">
               <label className="block text-sm font-bold text-gray-700 mb-1">
                 E-mail
               </label>
@@ -210,7 +221,7 @@ const EditProfileModal: React.FC<EditProfileModalProps> = ({
             </div>
             <button
               onClick={handleSave}
-              className="w-full bg-blue-600 text-white py-2 rounded-lg font-bold mb-4"
+              className="w-full bg-blue-600 mt-10 text-white py-2 rounded-lg font-bold mb-4"
             >
               Salvar
             </button>
