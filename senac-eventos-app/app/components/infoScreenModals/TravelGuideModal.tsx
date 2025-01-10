@@ -82,12 +82,14 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
             {currentSubModal === "hotel" && <HotelInfoCard />}
             {currentSubModal === "tourism" && <TourismInfoCard />}
           </div>
+          <div className="p-4 border-t border-gray-300">
           <button
             onClick={closeSubModal}
-            className="mt-6 w-full bg-blue-500 text-white py-2 rounded-md text-lg font-bold"
+            className="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600"
           >
             Fechar
           </button>
+        </div>
         </div>
       )}
     </div>

@@ -23,7 +23,6 @@ const HotelInfoCard = () => {
       { name: "Programa Infantil 'Ask Alfred'", icon: faChild },
       { name: "Wi-Fi Cortesia", icon: faWifi },
       { name: "Instalações para Reuniões e Eventos", icon: faBuilding },
-
     ],
   };
 
@@ -41,15 +40,17 @@ const HotelInfoCard = () => {
       {/* Services */}
       <div className="p-4">
         <h2 className="text-lg font-semibold text-blue-600 mb-4 text-center">Serviços Incluídos:</h2>
-        <div className="flex flex-wrap justify-center">
+        <div className="flex flex-wrap justify-center gap-4">
           {hotelInfo.services.map((service, index) => (
             <div
               key={index}
-              className="w-1/2 p-3 flex justify-center"
+              className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 p-3 flex justify-center"
             >
-              <div className="bg-white aspect-square flex flex-col justify-center items-center rounded-md shadow-sm border border-gray-200 p-4">
-                <FontAwesomeIcon icon={service.icon} size="2x" className="text-blue-500" />
-                <p className="text-center text-blue-500 font-medium mt-2">{service.name}</p>
+              <div className="bg-white flex flex-col justify-center items-center rounded-md shadow-sm border border-gray-200 p-4 min-h-[200px] flex-grow max-w-[220px]">
+                <div className="flex items-center justify-center flex-grow">
+                  <FontAwesomeIcon icon={service.icon} size="3x" className="text-blue-500" />
+                </div>
+                <p className="text-center text-blue-500 font-medium mt-2 text-base sm:text-lg">{service.name}</p>
               </div>
             </div>
           ))}

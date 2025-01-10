@@ -28,14 +28,27 @@ const TourismInfoCard: React.FC = () => {
     {
       title: "Programação de Atividades",
       items: [
-        "10 de janeiro: Reunião de integração no Millennium Hotel Broadway Times Square",
-        "11 de janeiro: City tour cultural",
-        "12 de janeiro: NRF das 8h às 17h, incluindo visita guiada das 12h às 14h",
-        "13 de janeiro: NRF das 8h às 17h",
-        "14 de janeiro: NRF das 8h às 17h",
-        "15 de janeiro: Visita ao Consulado-Geral do Brasil em New York às 11h",
-        "16 de janeiro: Visitas técnicas pela manhã",
-      ],
+        <>
+          <strong>10 de janeiro</strong>: Embarque para Nova York</>,
+        <>
+          <strong>11 de janeiro</strong>: New York Retail Summit 2025
+        </>,
+        <>
+          <strong>12 de janeiro</strong>: NRF das 8h às 17h, incluindo visita guiada das 12h às 14h
+        </>,
+        <>
+          <strong>13 de janeiro</strong>: NRF das 8h às 17h
+        </>,
+        <>
+          <strong>14 de janeiro</strong>: NRF das 8h às 17h
+        </>,
+        <>
+          <strong>15 de janeiro</strong>: Visita ao Consulado-Geral do Brasil em New York às 11h
+        </>,
+        <>
+          <strong>16 de janeiro</strong>: Visita à loja The Home Depot às 12h; Visita ao Centro Gastronômico Eataly às 13h; Visitas técnicas a lojas da 5ª Avenida: Amazon Go New York, The Lego Store, Nike, Puma, Apple 5th Ave, UNIQLO, Louis Vuitton e Hoka das 14h30 às 19h
+        </>,
+    ],
       icon: <FaCalendar size={28} className="text-blue-500 mr-4" />,
     },
     {

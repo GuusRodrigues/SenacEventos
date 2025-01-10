@@ -101,7 +101,10 @@ export default function FavoriteEventsScreen() {
 
   return (
     <div className="flex flex-col flex-1 p-4 bg-white">
-      <h1 className="text-lg font-bold mb-4 text-gray-800">Seus eventos favoritos</h1>
+      <div className="text-center mb-6">
+        <h1 className="text-2xl font-bold text-black">Favoritos</h1>
+        <hr className="mt-4 border-gray-300" />
+    </div>
       {loading ? (
         <EventSkeleton />
       ) : favorites.length === 0 ? (

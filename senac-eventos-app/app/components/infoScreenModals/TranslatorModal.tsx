@@ -16,7 +16,7 @@ const TranslatorModal: React.FC<TranslatorModalProps> = ({
   return (
     <div className="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
       <div className="bg-white p-6 rounded-lg w-80">
-        <h2 className="text-lg font-bold mb-4">Tradutor</h2>
+        <h2 className="text-xl font-bold text-black">Tradutor</h2>
         <button
           onClick={() => window.open("https://translate.google.com", "_blank")}
           className="mt-4 bg-blue-500 text-white py-2 px-4 rounded-lg w-full"

@@ -12,7 +12,7 @@ export default function HomeScreen() {
 
   return (
     <>
-      <div className="w-full bg-blue-500 flex items-center justify-center py-10 sm:py-20">
+      <div className="w-full bg-blue-500 flex items-center justify-center py-5 sm:py-20">
         <img
           src={imageUrlMarca}
           alt="Marca"
@@ -23,14 +23,15 @@ export default function HomeScreen() {
       </div>
 
       <div className="w-full flex justify-center">
-        <div className="w-full sm:w-[300px] h-[200px] sm:h-[300px] relative">
+        <div className="relative">
           <img
             src={imageUrlExemplo} // Usando a URL da imagem "exemploInicio.png"
             alt="Exemplo Início"
-            className="object-cover w-full h-full"
+            className="w-auto h-auto"
           />
         </div>
       </div>
+
 
       <div className="scrollbar-hide">
         <DateScroll
