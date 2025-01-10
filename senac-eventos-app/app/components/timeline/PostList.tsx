@@ -14,7 +14,7 @@ interface PostListProps {
   loading: boolean;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts, onRefresh, idParticipant, loading }) => {
+const PostList: React.FC<PostListProps> = ({ posts, idParticipant, loading }) => {
   if (loading) {
     return <PostSkeleton />;
   }
@@ -42,9 +42,7 @@ const PostList: React.FC<PostListProps> = ({ posts, onRefresh, idParticipant, lo
         />
       ))}
       <div className="mb-4">
-        <button onClick={onRefresh} className="px-4 py-2 bg-blue-500 text-white rounded-lg">
-          Atualizar
-        </button>
+        
       </div>
     </div>
     
