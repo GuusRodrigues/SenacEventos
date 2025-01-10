@@ -4,6 +4,7 @@ import useFormatPhone from "@/app/hooks/useFormatPhone";
 import { Participant } from "@/app/interfaces/participant";
 import { getAllParticipants } from "@/app/services/participantService";
 import React, { useEffect, useState } from "react";
+import { FaUser, FaWhatsapp, FaSuitcase, FaBuilding } from "react-icons/fa";
 
 interface ContactModalProps {
   visible: boolean;
@@ -36,19 +37,22 @@ const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
     }
   };
 
+  const openWhatsApp = (contact: string) => {
+    const cleanedContact = contact.replace(/\D/g, "");
+    const whatsappUrl = `https://wa.me/${cleanedContact}`;
+    window.open(whatsappUrl, "_blank");
+  };
+
   if (!visible) return null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-full max-w-2xl h-[80vh] flex flex-col bg-white rounded-lg shadow-lg">
-        {/* Header */}
         <div className="p-4 border-b border-gray-300">
           <h2 className="text-xl font-bold text-black">
             Contatos dos Coordenadores
           </h2>
         </div>
-
-        {/* Loading State */}
         {loading ? (
           <div className="flex items-center justify-center flex-1">
             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-blue-500"></div>
@@ -58,22 +62,33 @@ const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
             {contacts.map((contact) => (
               <div
                 key={contact.idParticipant}
-                className="bg-gray-100 p-4 rounded-lg mb-4 shadow"
+                className="bg-gray-100 p-4 rounded-lg mb-4 shadow flex flex-col space-y-2"
               >
-                <p className="text-base font-bold text-black">{contact.name}</p>
-                <p className="text-sm text-gray-600">
-                  Contato: {formatPhone(contact.contact)}
-                </p>
-                <p className="text-sm text-gray-600">Cargo: {contact.position}</p>
-                <p className="text-sm text-gray-600">
-                  Empresa: {contact.companyName || "Não especificada"}
-                </p>
+                <div className="flex items-center space-x-2">
+                  <FaUser className="text-gray-700" />
+                  <p className="text-base font-bold text-black">{contact.name}</p>
+                </div>
+                <div
+                  className="flex items-center space-x-2 cursor-pointer text-green-600"
+                  onClick={() => openWhatsApp(contact.contact)}
+                >
+                  <FaWhatsapp />
+                  <p>{formatPhone(contact.contact)}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaSuitcase className="text-gray-700" />
+                  <p className="text-sm text-gray-600">{contact.position}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaBuilding className="text-gray-700" />
+                  <p className="text-sm text-gray-600">
+                    {contact.companyName || "Não especificada"}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
         )}
-
-        {/* Close Button */}
         <div className="p-4 border-t border-gray-300">
           <button
             onClick={onClose}

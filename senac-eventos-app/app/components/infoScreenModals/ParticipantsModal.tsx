@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { getAllParticipants } from "@/app/services/participantService";
 import { Participant } from "@/app/interfaces/participant";
 import useFormatPhone from "@/app/hooks/useFormatPhone";
-
+import { FaUser, FaWhatsapp, FaBuilding, FaSuitcase } from "react-icons/fa";
 
 interface ParticipantsModalProps {
   visible: boolean;
@@ -19,7 +19,6 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
   const [loading, setLoading] = useState<boolean>(true);
   const { formatPhone } = useFormatPhone();
 
-
   useEffect(() => {
     if (visible) {
       loadParticipants();
@@ -30,13 +29,19 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
     try {
       setLoading(true);
       const data: Participant[] = await getAllParticipants();
-      setParticipants(data);
-    } catch (error) {
-      console.error("Erro ao carregar participantes:", error);
-
+      const filteredParticipants = data.filter(
+        (participant) => participant.postPermission === 0
+      );
+      setParticipants(filteredParticipants);
     } finally {
       setLoading(false);
     }
+  };
+
+  const openWhatsApp = (contact: string) => {
+    const cleanedContact = contact.replace(/\D/g, "");
+    const whatsappUrl = `https://wa.me/${cleanedContact}`;
+    window.open(whatsappUrl, "_blank");
   };
 
   if (!visible) return null;
@@ -47,7 +52,6 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
         <div className="p-4 border-b border-gray-300">
           <h2 className="text-2xl font-bold text-gray-800">Participantes</h2>
         </div>
-
         <div className="flex-1 overflow-y-auto p-4 scrollbar-hide">
           {loading ? (
             <div className="flex justify-center items-center h-full">
@@ -58,25 +62,37 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
             participants.map((participant) => (
               <div
                 key={participant.idParticipant}
-                className="bg-gray-100 p-4 rounded-lg shadow mb-4"
+                className="bg-gray-100 p-4 rounded-lg shadow mb-4 flex flex-col space-y-2"
               >
-                <h3 className="text-lg font-bold text-gray-800">
-                  {participant.name}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  Contato: {formatPhone(participant.contact)}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Cargo: {participant.position}
-                </p>
-                <p className="text-sm text-gray-600">
-                  Empresa: {participant.companyName || "Não especificada"}
-                </p>
+                <div className="flex items-center space-x-2">
+                  <FaUser className="text-gray-700" />
+                  <h3 className="text-lg font-bold text-gray-800">
+                    {participant.name}
+                  </h3>
+                </div>
+                <div
+                  className="flex items-center space-x-2 cursor-pointer text-green-600"
+                  onClick={() => openWhatsApp(participant.contact)}
+                >
+                  <FaWhatsapp />
+                  <p>{formatPhone(participant.contact)}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaSuitcase className="text-gray-700" />
+                  <p className="text-sm text-gray-600">
+                    Cargo: {participant.position}
+                  </p>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <FaBuilding className="text-gray-700" />
+                  <p className="text-sm text-gray-600">
+                    Empresa: {participant.companyName || "Não especificada"}
+                  </p>
+                </div>
               </div>
             ))
           )}
         </div>
-
         <div className="p-4 border-t border-gray-300">
           <button
             onClick={onClose}
@@ -90,4 +106,4 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
   );
 };
 
-export default ParticipantsModal; 
+export default ParticipantsModal;
