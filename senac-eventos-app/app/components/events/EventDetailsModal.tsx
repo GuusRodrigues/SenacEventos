@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from "react";
 import Modal from "react-modal";
-import { FaCalendarAlt, FaClock } from "react-icons/fa";
+import { FaCalendarAlt, FaClock, FaMapMarkerAlt } from "react-icons/fa";
 import { Event } from "@/app/interfaces/event";
 import { createCheckin } from "@/app/services/checkinService";
 import useAlert from "@/app/hooks/useAlert";
+import useMapsRedirect from "@/app/hooks/useMapsRedirect";
 
 interface EventDetailsProps {
   event: Event;
@@ -26,6 +27,7 @@ export default function EventDetails({
 }: EventDetailsProps) {
   const [hasCheckedInState, setHasCheckedInState] = useState(hasCheckedIn);
   const { showError, showSuccess } = useAlert();
+  const redirectToMaps = useMapsRedirect(event.location || "");
 
   const formattedDate = event.date.split("-").reverse().join("/");
   const formattedTime = event.time.split(":").slice(0, 2).join(":");
@@ -85,22 +87,16 @@ export default function EventDetails({
         </div>
         <div className="mb-6">
           <h3 className="text-2xl font-semibold text-gray-800">Endereço</h3>
-          <p className="text-lg text-gray-600 mt-4">{event.location}</p>
-        </div>
-        {event.speaker && event.speaker.length > 0 && (
-          <div className="mb-6">
-            <h3 className="text-2xl font-semibold text-gray-800">Palestrantes</h3>
-            {event.speaker.map((speaker) => (
-              <div key={speaker.idSpeaker} className="mt-4">
-                <p className="text-xl font-bold text-gray-800">{speaker.name}</p>
-                <p className="text-lg text-gray-600">{speaker.description}</p>
-                <p className="text-lg text-gray-500">
-                  {speaker.role} - {speaker.company}
-                </p>
-              </div>
-            ))}
+          <div className="flex items-center mt-4">
+            <FaMapMarkerAlt size={28} className="text-blue-600 mr-4" />
+            <button
+              onClick={redirectToMaps}
+              className="text-lg text-blue-600 underline hover:text-blue-800"
+            >
+              {event.location || "Local não especificado"}
+            </button>
           </div>
-        )}
+        </div>
         <div className="p-6">
           {hasCheckedInState ? (
             <button
