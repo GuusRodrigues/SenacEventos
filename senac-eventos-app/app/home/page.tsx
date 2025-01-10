@@ -24,11 +24,13 @@ export default function HomeScreen() {
 
       <div className="w-full flex justify-center">
         <div className="relative">
+          <a href="https://nrfbigshow.nrf.com/">
           <img
             src={imageUrlExemplo} // Usando a URL da imagem "exemploInicio.png"
             alt="Exemplo Início"
             className="w-auto h-auto"
           />
+          </a>
         </div>
       </div>
 

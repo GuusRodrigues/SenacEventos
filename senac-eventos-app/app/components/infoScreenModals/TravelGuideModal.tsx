@@ -1,11 +1,10 @@
 "use client";
 
 import React, { useState } from "react";
-import { MdFlight, MdHotel, MdDirectionsCar } from "react-icons/md";
+import { MdFlight, MdHotel, MdDirectionsCar, MdBook } from "react-icons/md";
 import TourismInfoCard from "./TourismInfoCard";
 import HotelInfoCard from "./HotelInfoCard";
 import FlightInfoCard from "./FlightInfoCard";
-
 
 interface TravelGuideModalProps {
   visible: boolean;
@@ -16,12 +15,13 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
   visible,
   onClose,
 }) => {
-  const [currentSubModal, setCurrentSubModal] = useState<"flight" | "hotel" | "tourism" | null>(
-    null
-  );
+  const [currentSubModal, setCurrentSubModal] = useState<
+    "flight" | "hotel" | "tourism" | "guide" | null
+  >(null);
 
-  const openSubModal = (modalType: "flight" | "hotel" | "tourism") => {
-
+  const openSubModal = (
+    modalType: "flight" | "hotel" | "tourism" | "guide"
+  ) => {
     setCurrentSubModal(modalType);
   };
 
@@ -60,6 +60,15 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
               <MdDirectionsCar className="text-6xl text-gray-800" />
               <span className="mt-2 text-gray-800 text-lg">Turismo</span>
             </button>
+            <button
+              className="flex flex-col items-center"
+              onClick={() => openSubModal("guide")}
+            >
+              <MdBook className="text-6xl text-gray-800" />
+              <span className="mt-2 text-gray-800 text-lg">
+                Cartilha
+              </span>
+            </button>
           </div>
           <button
             onClick={onClose}
@@ -76,24 +85,39 @@ const TravelGuideModal: React.FC<TravelGuideModalProps> = ({
             {currentSubModal === "flight" && "Informações sobre Voos"}
             {currentSubModal === "hotel" && "Informações sobre Hospedagem"}
             {currentSubModal === "tourism" && "Informações sobre Turismo"}
+            {currentSubModal === "guide" && "Cartilha de Viagem"}
           </h2>
           <div className="overflow-y-auto max-h-[90vh]">
             {currentSubModal === "flight" && <FlightInfoCard />}
             {currentSubModal === "hotel" && <HotelInfoCard />}
             {currentSubModal === "tourism" && <TourismInfoCard />}
+            {currentSubModal === "guide" && (
+              <div className="flex flex-col items-center justify-center h-full">
+                <p className="text-lg text-gray-700 text-center mb-4">
+                  Clique no botão abaixo para acessar a cartilha de viagem em PDF.
+                </p>
+                <a
+                  href="/admins/PLANO DE VOO.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-500 text-white py-2 px-4 rounded-lg font-bold hover:bg-blue-600"
+                >
+                  Abrir Cartilha
+                </a>
+              </div>
+            )}
           </div>
           <div className="p-4 border-t border-gray-300">
-          <button
-            onClick={closeSubModal}
-            className="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600"
-          >
-            Fechar
-          </button>
-        </div>
+            <button
+              onClick={closeSubModal}
+              className="w-full bg-blue-500 text-white py-2 rounded-lg font-bold hover:bg-blue-600"
+            >
+              Fechar
+            </button>
+          </div>
         </div>
       )}
     </div>
-
   );
 };
 
