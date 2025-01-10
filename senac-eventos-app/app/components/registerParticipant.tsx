@@ -6,6 +6,7 @@ import { AreaOfExpertiseDTO } from "../interfaces/areaOfExpertise";
 import { CreateParticipant } from "../interfaces/participant";
 import { createParticipant } from "../services/participantService";
 import { getAllAreas } from "../services/areaService";
+import useFormatPhone from "../hooks/useFormatPhone";
 
 interface RegisterParticipantScreenProps {
   onClose: () => void;
@@ -20,12 +21,14 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
   const [email, setEmail] = useState("");
   const [position, setPosition] = useState("");
   const [contact, setContact] = useState("");
+  const [countryCode, setCountryCode] = useState("+55"); // Código do país inicial
   const [companyName, setCompanyName] = useState("");
   const [areas, setAreas] = useState<AreaOfExpertiseDTO[]>([]);
   const [selectedAreas, setSelectedAreas] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [areasLoading, setAreasLoading] = useState(true);
   const [errors, setErrors] = useState<{ [key: string]: boolean }>({});
+  const { formatPhone } = useFormatPhone();
 
   useEffect(() => {
     fetchAreasOfExpertise();
@@ -69,7 +72,7 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
       name,
       email,
       position,
-      contact: sanitizedContact,
+      contact: `${countryCode} ${sanitizedContact}`, // Inclui o código do país
       companyName: companyName || undefined,
       idArea: selectedAreas,
       postPermission: 0,
@@ -143,20 +146,31 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
           <p className="text-red-500 text-sm mt-1">Cargo é obrigatório.</p>
         )}
       </div>
-      <div className="mb-4">
+      <div className="mb-4 flex gap-2">
+        <select
+          className="p-3 border rounded-lg text-gray-600 border-blue-300"
+          value={countryCode}
+          onChange={(e) => setCountryCode(e.target.value)}
+        >
+          <option value="+55">+55 (Brasil)</option>
+          <option value="+1">+1 (EUA)</option>
+          <option value="+44">+44 (Reino Unido)</option>
+          <option value="+91">+91 (Índia)</option>
+          <option value="+81">+81 (Japão)</option>
+        </select>
         <input
-          className={`w-full p-3 rounded-lg border text-gray-600 ${
+          className={`flex-grow p-3 rounded-lg border text-gray-600 ${
             errors.contact ? "border-red-500" : "border-blue-300"
           }`}
           placeholder="Contato*"
-          value={contact}
+          value={formatPhone(contact)}
           onChange={(e) => setContact(e.target.value)}
           type="tel"
         />
-        {errors.contact && (
-          <p className="text-red-500 text-sm mt-1">Contato é obrigatório.</p>
-        )}
       </div>
+      {errors.contact && (
+        <p className="text-red-500 text-sm mt-1">Contato é obrigatório.</p>
+      )}
       <div className="mb-4">
         <input
           className="w-full p-3 rounded-lg border text-gray-600 border-blue-300"
@@ -170,35 +184,35 @@ const RegisterParticipantScreen: React.FC<RegisterParticipantScreenProps> = ({
           Segmento*
         </label>
         <MultiSelect
-  options={areas.map((area) => ({
-    label: area.name,
-    value: area.idArea,
-  }))}
-  value={selectedAreas
-    .map((id) => {
-      const area = areas.find((area) => area.idArea === id);
-      return area
-        ? { label: area.name, value: area.idArea }
-        : undefined;
-    })
-    .filter(
-      (area): area is { label: string; value: number } =>
-        area !== undefined
-    )}
-  onChange={(selected: { label: string; value: number }[]) =>
-    setSelectedAreas(selected.map((option) => option.value))
-  }
-  labelledBy="Selecione as Áreas"
-  className="text-gray-800"
-  overrideStrings={{
-    allItemsAreSelected: "Todos os itens selecionados",
-    clearSearch: "Limpar busca",
-    noOptions: "Nenhuma opção disponível",
-    search: "Pesquisar",
-    selectAll: "Selecionar Todos",
-    selectSomeItems: "Selecione...",
-  }}
-/>
+          options={areas.map((area) => ({
+            label: area.name,
+            value: area.idArea,
+          }))}
+          value={selectedAreas
+            .map((id) => {
+              const area = areas.find((area) => area.idArea === id);
+              return area
+                ? { label: area.name, value: area.idArea }
+                : undefined;
+            })
+            .filter(
+              (area): area is { label: string; value: number } =>
+                area !== undefined
+            )}
+          onChange={(selected: { label: string; value: number }[]) =>
+            setSelectedAreas(selected.map((option) => option.value))
+          }
+          labelledBy="Selecione as Áreas"
+          className="text-gray-800"
+          overrideStrings={{
+            allItemsAreSelected: "Todos os itens selecionados",
+            clearSearch: "Limpar busca",
+            noOptions: "Nenhuma opção disponível",
+            search: "Pesquisar",
+            selectAll: "Selecionar Todos",
+            selectSomeItems: "Selecione...",
+          }}
+        />
         {errors.selectedAreas && (
           <p className="text-red-500 text-sm mt-1">
             Selecione pelo menos uma área.

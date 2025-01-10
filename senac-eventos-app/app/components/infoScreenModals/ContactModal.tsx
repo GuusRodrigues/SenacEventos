@@ -1,10 +1,10 @@
 "use client";
 
-import useFormatPhone from "@/app/hooks/useFormatPhone";
-import { Participant } from "@/app/interfaces/participant";
-import { getAllParticipants } from "@/app/services/participantService";
 import React, { useEffect, useState } from "react";
-import { FaUser, FaWhatsapp, FaSuitcase, FaBuilding } from "react-icons/fa";
+import { getAllParticipants } from "@/app/services/participantService";
+import { Participant } from "@/app/interfaces/participant";
+import useDisplayContact from "@/app/hooks/useDisplayContact";
+import { FaUser, FaWhatsapp, FaBuilding, FaSuitcase } from "react-icons/fa";
 
 interface ContactModalProps {
   visible: boolean;
@@ -12,9 +12,9 @@ interface ContactModalProps {
 }
 
 const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
-  const { formatPhone } = useFormatPhone();
   const [contacts, setContacts] = useState<Participant[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const { formatFullPhone } = useDisplayContact();
 
   useEffect(() => {
     if (visible) {
@@ -30,8 +30,6 @@ const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
         (contact) => contact.postPermission === 1
       );
       setContacts(filteredContacts);
-    } catch (error) {
-      console.error("Erro ao carregar contatos:", error);
     } finally {
       setLoading(false);
     }
@@ -49,9 +47,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       <div className="w-full max-w-2xl h-[80vh] flex flex-col bg-white rounded-lg shadow-lg">
         <div className="p-4 border-b border-gray-300">
-          <h2 className="text-xl font-bold text-black">
-            Contatos dos Coordenadores
-          </h2>
+          <h2 className="text-xl font-bold text-black">Contatos dos Coordenadores</h2>
         </div>
         {loading ? (
           <div className="flex items-center justify-center flex-1">
@@ -73,7 +69,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ visible, onClose }) => {
                   onClick={() => openWhatsApp(contact.contact)}
                 >
                   <FaWhatsapp />
-                  <p>{formatPhone(contact.contact)}</p>
+                  <p>{formatFullPhone(contact.contact)}</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <FaSuitcase className="text-gray-700" />

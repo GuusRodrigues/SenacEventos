@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { getAllParticipants } from "@/app/services/participantService";
 import { Participant } from "@/app/interfaces/participant";
-import useFormatPhone from "@/app/hooks/useFormatPhone";
+import useDisplayContact from "@/app/hooks/useDisplayContact";
 import { FaUser, FaWhatsapp, FaBuilding, FaSuitcase } from "react-icons/fa";
 
 interface ParticipantsModalProps {
@@ -17,7 +17,7 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
 }) => {
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const { formatPhone } = useFormatPhone();
+  const { formatFullPhone } = useDisplayContact();
 
   useEffect(() => {
     if (visible) {
@@ -56,7 +56,6 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
           {loading ? (
             <div className="flex justify-center items-center h-full">
               <div className="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full"></div>
-              <p className="ml-4 text-gray-600">Carregando participantes...</p>
             </div>
           ) : (
             participants.map((participant) => (
@@ -75,7 +74,7 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
                   onClick={() => openWhatsApp(participant.contact)}
                 >
                   <FaWhatsapp />
-                  <p>{formatPhone(participant.contact)}</p>
+                  <p>{formatFullPhone(participant.contact)}</p>
                 </div>
                 <div className="flex items-center space-x-2">
                   <FaSuitcase className="text-gray-700" />

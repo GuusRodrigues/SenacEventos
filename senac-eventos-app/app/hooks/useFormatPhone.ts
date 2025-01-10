@@ -2,15 +2,39 @@ import { useCallback } from "react";
 
 const useFormatPhone = () => {
   const formatPhone = useCallback((phone: string): string => {
-    if (!phone) return ""; 
-    const cleaned = phone.replace(/\D/g, "");
-    if (cleaned.length === 11) {
-      return `(${cleaned.slice(0, 2)}) ${cleaned.slice(2, 3)} ${cleaned.slice(3, 7)}-${cleaned.slice(7)}`;
+    if (!phone) return "";
+
+    const cleaned = phone.replace(/\D/g, ""); // Remove caracteres não numéricos
+    const maxLength = 11; // Limita a 11 dígitos
+
+    const limited = cleaned.slice(0, maxLength); // Limita ao tamanho máximo permitido
+
+    // Aplica a máscara de forma progressiva
+    if (limited.length === 11) {
+      return `(${limited.slice(0, 2)}) ${limited.slice(2, 3)} ${limited.slice(3, 7)}-${limited.slice(7)}`;
+    } else if (limited.length > 6) {
+      return `(${limited.slice(0, 2)}) ${limited.slice(2, 3)} ${limited.slice(3)}`;
+    } else if (limited.length > 2) {
+      return `(${limited.slice(0, 2)}) ${limited.slice(2)}`;
+    } else {
+      return `(${limited}`;
     }
-    return phone; 
   }, []);
 
-  return { formatPhone };
+  const handlePhoneChange = useCallback((currentValue: string, previousValue: string): string => {
+    const currentCleaned = currentValue.replace(/\D/g, "");
+    const previousCleaned = previousValue.replace(/\D/g, "");
+
+    if (currentCleaned.length < previousCleaned.length) {
+      // O usuário está apagando algo, remove apenas o último dígito corretamente
+      return currentCleaned;
+    }
+
+    // Aplica a formatação ao novo valor
+    return formatPhone(currentValue);
+  }, [formatPhone]);
+
+  return { formatPhone, handlePhoneChange };
 };
 
 export default useFormatPhone;
