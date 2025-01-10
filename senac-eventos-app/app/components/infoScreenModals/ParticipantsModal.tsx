@@ -6,6 +6,7 @@ import { Participant } from "@/app/interfaces/participant";
 import useDisplayContact from "@/app/hooks/useDisplayContact";
 import { FaUser, FaWhatsapp, FaBuilding, FaSuitcase } from "react-icons/fa";
 
+
 interface ParticipantsModalProps {
   visible: boolean;
   onClose: () => void;
@@ -15,6 +16,7 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
   visible,
   onClose,
 }) => {
+
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const { formatFullPhone } = useDisplayContact();
@@ -100,6 +102,7 @@ const ParticipantsModal: React.FC<ParticipantsModalProps> = ({
             Fechar
           </button>
         </div>
+
       </div>
     </div>
   );
