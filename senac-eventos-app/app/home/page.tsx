@@ -7,7 +7,7 @@ import DateScroll from "../components/dateScroll/dateScroll";
 export default function HomeScreen() {
   const [selectedDate, setSelectedDate] = useState("");
 
-  const imageUrlExemplo = "https://missaonrf25.pe.senac.br/appevento/uploads/exemploInicio.png";
+  const imageUrlBanner = "https://missaonrf25.pe.senac.br/appevento/uploads/nrfbanner.png";
   const imageUrlMarca = "https://missaonrf25.pe.senac.br/appevento/uploads/marca.png";
 
   return (
@@ -26,7 +26,7 @@ export default function HomeScreen() {
         <div className="relative">
           <a href="https://nrfbigshow.nrf.com/">
           <img
-            src={imageUrlExemplo} // Usando a URL da imagem "exemploInicio.png"
+            src={imageUrlBanner} // Usando a URL da imagem "exemploInicio.png"
             alt="Exemplo Início"
             className="w-auto h-auto"
           />
