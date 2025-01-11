@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState, useEffect } from "react";
@@ -10,9 +11,18 @@ import EditPostModal from "./EditPostModal";
 interface PostCardProps {
   post: Post;
   likedByUser: boolean;
+  onPostDeleted: (idPost: number) => void;
+  onPostUpdated: (updatedPost: Post) => void;
+  onRefresh: () => void;
 }
 
-const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
+const PostCard: React.FC<PostCardProps> = ({
+  post,
+  likedByUser,
+  onPostDeleted,
+  onPostUpdated,
+  onRefresh,
+}) => {
   const [likes, setLikes] = useState<number>(Array.isArray(post.likes) ? post.likes.length : 0);
   const [liked, setLiked] = useState<boolean>(!!likedByUser);
   const [idParticipant, setIdParticipant] = useState<number | null>(null);
@@ -21,15 +31,11 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
   const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
-    const fetchParticipantId = async () => {
-      try {
-        const storedParticipant = localStorage.getItem("participant");
-        if (storedParticipant) {
-          const participant = JSON.parse(storedParticipant);
-          setIdParticipant(participant.idParticipant);
-        }
-      } catch (error) {
-        console.error(error);
+    const fetchParticipantId = () => {
+      const storedParticipant = localStorage.getItem("participant");
+      if (storedParticipant) {
+        const participant = JSON.parse(storedParticipant);
+        setIdParticipant(participant.idParticipant);
       }
     };
 
@@ -44,7 +50,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
       setLikes((prev) => prev + 1);
       setLiked(true);
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao curtir o post:", error);
     }
   };
 
@@ -60,7 +66,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
         setLiked(false);
       }
     } catch (error) {
-      console.error(error);
+      console.error("Erro ao remover curtida do post:", error);
     }
   };
 
@@ -70,7 +76,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
   };
 
   const handleDelete = () => {
-    console.log("Deletar post", post);
+    onPostDeleted(post.idPost);
     setOptionsOpen(false);
   };
 
@@ -93,14 +99,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
             expanded ? "max-h-[1000px]" : "max-h-[80px]"
           }`}
         >
-          <p
-            className="text-gray-800 text-lg mb-2"
-            style={{
-              wordWrap: "break-word",
-              wordBreak: "break-word",
-              whiteSpace: "pre-wrap",
-            }}
-          >
+          <p className="text-gray-800 text-lg mb-2" style={{ whiteSpace: "pre-wrap" }}>
             {post.description}
           </p>
         </div>
@@ -112,25 +111,20 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
             {expanded ? "Ver menos" : "Ver mais"}
           </button>
         )}
-        <p className="text-gray-500 text-sm mt-2">
-          {`Autor: ${post.participant.name} (${post.participant.companyName})`}
-        </p>
+        <p className="text-gray-500 text-sm mt-2">{`Autor: ${post.participant.name}`}</p>
         <button
           onClick={liked ? handleUnlike : handleLike}
           className="absolute bottom-2 right-2 flex-row items-center"
         >
-          {liked ? (
-            <FaHeart size={20} color="#FF0000" />
-          ) : (
-            <FaRegHeart size={20} color="#A3A3A3" />
-          )}
+          {liked ? <FaHeart size={20} color="#FF0000" /> : <FaRegHeart size={20} color="#A3A3A3" />}
           <span className="ml-1 text-sm text-gray-500">{likes}</span>
         </button>
       </div>
       {optionsOpen && (
         <PostOptionsModal
+          postId={post.idPost}
           onEdit={handleEdit}
-          onDelete={handleDelete}
+          onDeleted={handleDelete}
           onClose={() => setOptionsOpen(false)}
         />
       )}
@@ -139,7 +133,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
           post={post}
           modalVisible={editModalOpen}
           setModalVisible={setEditModalOpen}
-          onPostUpdated={(updatedPost) => console.log("Post atualizado", updatedPost)}
+          onPostUpdated={onPostUpdated}
+          onRefresh={onRefresh}
         />
       )}
     </div>

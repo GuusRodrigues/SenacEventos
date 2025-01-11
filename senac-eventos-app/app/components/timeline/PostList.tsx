@@ -14,7 +14,17 @@ interface PostListProps {
   loading: boolean;
 }
 
-const PostList: React.FC<PostListProps> = ({ posts, idParticipant, loading }) => {
+const PostList: React.FC<PostListProps> = ({ posts, setPosts, onRefresh, idParticipant, loading }) => {
+  const handlePostDeleted = (idPost: number) => {
+    setPosts((prevPosts) => prevPosts.filter((post) => post.idPost !== idPost));
+  };
+
+  const handlePostUpdated = (updatedPost: Post) => {
+    setPosts((prevPosts) =>
+      prevPosts.map((post) => (post.idPost === updatedPost.idPost ? updatedPost : post))
+    );
+  };
+
   if (loading) {
     return <PostSkeleton />;
   }
@@ -39,13 +49,12 @@ const PostList: React.FC<PostListProps> = ({ posts, idParticipant, loading }) =>
             Array.isArray(item.likes) &&
             item.likes.some((like) => like.participant?.idParticipant === idParticipant)
           }
+          onPostDeleted={handlePostDeleted}
+          onPostUpdated={handlePostUpdated}
+          onRefresh={onRefresh} 
         />
       ))}
-      <div className="mb-4">
-        
-      </div>
     </div>
-    
   );
 };
 

@@ -20,7 +20,23 @@ const useAlert = () => {
     });
   }, []);
 
-  return { showSuccess, showError };
+  const showConfirmation = useCallback(
+    (message: string, confirmText: string, cancelText: string) => {
+      return Swal.fire({
+        title: "Tem certeza?",
+        text: message,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#d33",
+        cancelButtonColor: "#3085d6",
+        confirmButtonText: confirmText,
+        cancelButtonText: cancelText,
+      });
+    },
+    []
+  );
+
+  return { showSuccess, showError, showConfirmation };
 };
 
 export default useAlert;

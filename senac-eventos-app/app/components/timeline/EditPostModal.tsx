@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @next/next/no-img-element */
 "use client";
 
 import React, { useState } from "react";
@@ -15,6 +15,7 @@ interface EditPostModalProps {
   modalVisible: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   onPostUpdated: (updatedPost: Post) => void;
+  onRefresh: () => void;
 }
 
 const EditPostModal: React.FC<EditPostModalProps> = ({
@@ -22,6 +23,7 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
   modalVisible,
   setModalVisible,
   onPostUpdated,
+  onRefresh,
 }) => {
   const [description, setDescription] = useState(post.description);
   const [imageFile, setImageFile] = useState<File | undefined>(undefined);
@@ -40,27 +42,20 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
   };
 
   const handleUpdatePost = async () => {
-    if (!description) {
-      alert("Por favor, preencha todos os campos antes de atualizar.");
-      return;
-    }
-  
-    if (!participant) {
-      alert("Usuário não encontrado. Por favor, faça login novamente.");
-      return;
-    }
-  
+    if (!description || !participant) return;
+
     const formData = new FormData();
     formData.append("description", description);
-  
+
     if (imageFile) {
       formData.append("image", imageFile);
     }
-  
+
     try {
       const updatedPost = await updatePost(post.idPost, participant.idParticipant, formData);
       onPostUpdated(updatedPost);
       setModalVisible(false);
+      onRefresh();
     } catch (error) {
       console.error("Erro ao atualizar o post:", error);
       alert("Erro ao atualizar o post.");
@@ -98,10 +93,7 @@ const EditPostModal: React.FC<EditPostModalProps> = ({
         )}
 
         <div className="flex justify-between mb-4">
-          <button
-            onClick={openImagePicker}
-            className="flex flex-col items-center justify-center gap-1 text-blue-500"
-          >
+          <button onClick={openImagePicker} className="flex flex-col items-center justify-center gap-1 text-blue-500">
             <FaImage size={32} />
             <p className="text-sm font-medium">Galeria</p>
           </button>
