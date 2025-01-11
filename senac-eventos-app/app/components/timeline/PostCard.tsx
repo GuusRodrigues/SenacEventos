@@ -1,11 +1,11 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaEllipsisH, FaHeart, FaRegHeart } from "react-icons/fa";
 import { Post } from "@/app/interfaces/post";
 import { createLike, deleteLike } from "@/app/services/likeService";
+import PostOptionsModal from "./PostOptionsModal";
+import EditPostModal from "./EditPostModal";
 
 interface PostCardProps {
   post: Post;
@@ -17,6 +17,8 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
   const [liked, setLiked] = useState<boolean>(!!likedByUser);
   const [idParticipant, setIdParticipant] = useState<number | null>(null);
   const [expanded, setExpanded] = useState<boolean>(false);
+  const [optionsOpen, setOptionsOpen] = useState<boolean>(false);
+  const [editModalOpen, setEditModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchParticipantId = async () => {
@@ -27,7 +29,7 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
           setIdParticipant(participant.idParticipant);
         }
       } catch (error) {
-        console.error("Erro ao buscar participante:", error);
+        console.error(error);
       }
     };
 
@@ -35,17 +37,14 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
   }, []);
 
   const handleLike = async () => {
-    if (!idParticipant) {
-      console.error("ID do participante não encontrado.");
-      return;
-    }
+    if (!idParticipant) return;
 
     try {
       await createLike({ idPost: post.idPost, idParticipant });
       setLikes((prev) => prev + 1);
       setLiked(true);
     } catch (error) {
-      console.error("Não foi possível adicionar o like.");
+      console.error(error);
     }
   };
 
@@ -61,23 +60,41 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
         setLiked(false);
       }
     } catch (error) {
-      console.error("Não foi possível remover o like.");
+      console.error(error);
     }
   };
 
+  const handleEdit = () => {
+    setEditModalOpen(true);
+    setOptionsOpen(false);
+  };
+
+  const handleDelete = () => {
+    console.log("Deletar post", post);
+    setOptionsOpen(false);
+  };
+
   return (
-    <div className="mb-5 bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300">
+    <div className="mb-5 bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 relative">
       {post.imageUrl && (
         <img src={post.imageUrl} className="w-full h-[300px] object-cover" alt="Post Image" />
       )}
       <div className="p-4 relative">
+        {idParticipant === post.participant.idParticipant && (
+          <button
+            onClick={() => setOptionsOpen(true)}
+            className="absolute top-2 right-2 text-gray-600"
+          >
+            <FaEllipsisH size={20} />
+          </button>
+        )}
         <div
           className={`overflow-hidden transition-max-height duration-300 ease-in-out ${
             expanded ? "max-h-[1000px]" : "max-h-[80px]"
           }`}
         >
           <p
-            className="text-gray-800  text-lg mb-2"
+            className="text-gray-800 text-lg mb-2"
             style={{
               wordWrap: "break-word",
               wordBreak: "break-word",
@@ -110,6 +127,21 @@ const PostCard: React.FC<PostCardProps> = ({ post, likedByUser }) => {
           <span className="ml-1 text-sm text-gray-500">{likes}</span>
         </button>
       </div>
+      {optionsOpen && (
+        <PostOptionsModal
+          onEdit={handleEdit}
+          onDelete={handleDelete}
+          onClose={() => setOptionsOpen(false)}
+        />
+      )}
+      {editModalOpen && (
+        <EditPostModal
+          post={post}
+          modalVisible={editModalOpen}
+          setModalVisible={setEditModalOpen}
+          onPostUpdated={(updatedPost) => console.log("Post atualizado", updatedPost)}
+        />
+      )}
     </div>
   );
 };
