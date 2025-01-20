@@ -1,8 +1,8 @@
-# NRF Details - Frontend Web
+# Agenda NRF Details - Frontend Web
 
 ## 📜 Descrição
 
-O **NRF Details - Frontend** é a interface web desenvolvida para o gerenciamento e acompanhamento da **Missão NRF 2025**, organizada pela **Fecomércio-PE**, em parceria com o **Sebrae** e o **Senac-PE**. Essa aplicação permite que os participantes acessem informações detalhadas sobre o evento **NRF Retail's Big Show 2025** em Nova York, oferecendo uma experiência intuitiva e visualmente atraente.
+A **Agenda NRF Details - Frontend** é a interface web desenvolvida para o gerenciamento e acompanhamento da **Missão NRF 2025**, organizada pela **Fecomércio-PE**, em parceria com o **Sebrae** e o **Senac-PE**. Essa aplicação permite que os participantes acessem informações detalhadas sobre o evento **NRF Retail's Big Show 2025** em Nova York, oferecendo uma experiência intuitiva e visualmente atraente.
 
 ## 🛠️ Construído com
 
